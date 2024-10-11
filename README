@@ -16,25 +16,31 @@ A command-line tool for generating static helper code for Rive animations. This 
 
 ## Build Instructions
 
-To build the code generator, follow these steps:
+Run the build script:
+```
+cd build && ./build.sh
+```
 
-1. Run the build script:
-   ```
-   cd build && ./build.sh
-   ```
+To build for release:
+```
+cd build && ./build.sh release
+```
 
-This will compile the code generator and create the executable in the `build/out/lib` directory.
+This will compile the code generator and create the executable in the `build/out/lib/debug` or `build/out/lib/release` directory.
 
 ## Usage
 
 After building, run the code generator with the following syntax:
 
 Debug:
-```
+
+```sh
 ./build/out/lib/debug/rive_code_generator -i <input_rive_file> -o <output_directory> -l <language>
 ```
+
 Release:
-```
+
+```sh
 ./build/out/lib/release/rive_code_generator -i <input_rive_file> -o <output_directory> -l <language>
 ```
 
@@ -42,12 +48,15 @@ Replace `<input_rive_file>`, `<output_directory>`, and `<language>` with your sp
 
 For example:
 
-```
+```sh
 ./build/rive_code_generator -i ./examples/rive_files/animation.riv -o ./examples/generated_code.dart -l dart
 ```
 
-Optionally, you can provide a custom template file to use for the generated code. Specify the template file with the `-t` option.
+Optionally, you can provide a custom template file to use for the generated code. Specify the template file with the `-t` option which the path to the file.
 
+```sh
+./build/rive_code_generator -i ./rive_files/ -o ./output/rive.json -t templates/json_template.mustache
+```
 ## License
 
 MIT
