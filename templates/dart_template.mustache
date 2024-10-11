@@ -7,66 +7,66 @@
 /// This class provides static getters for each Rive file's metadata.
 abstract class RiveMeta {
   {{#riv_files}}
-  /// Getter for the metadata of the {{riv_variable}} Rive file.
-  static const _{{riv_class}}File {{riv_variable}} = _{{riv_class}}File();
+  /// Getter for the metadata of the {{riv_camel_case}} Rive file.
+  static const _{{riv_pascal_case}}File {{riv_camel_case}} = _{{riv_pascal_case}}File();
 
   {{/riv_files}}
 }
 
 {{#riv_files}}
 // ----------------------
-// {{riv_variable}} Rive file
+// {{riv_camel_case}} Rive file
 // ----------------------
 
-/// Metadata for the "{{riv_variable}}" Rive file.
-class _{{riv_class}}File {
-  const _{{riv_class}}File();
+/// Metadata for the "{{riv_camel_case}}" Rive file.
+class _{{riv_pascal_case}}File {
+  const _{{riv_pascal_case}}File();
 
-  _{{riv_class}}Artboards get artboards => const _{{riv_class}}Artboards();
+  _{{riv_pascal_case}}Artboards get artboards => const _{{riv_pascal_case}}Artboards();
 }
 
-/// Container for all artboards in the "{{riv_variable}}" Rive file.
-class _{{riv_class}}Artboards {
-  const _{{riv_class}}Artboards();
+/// Container for all artboards in the "{{riv_camel_case}}" Rive file.
+class _{{riv_pascal_case}}Artboards {
+  const _{{riv_pascal_case}}Artboards();
 
   {{#artboards}}
-  _{{riv_class}}Artboard{{artboard_class_name}} get {{artboard_variable}} => const _{{riv_class}}Artboard{{artboard_class_name}}();
+  _{{riv_pascal_case}}Artboard{{artboard_pascal_case}} get {{artboard_camel_case}} => const _{{riv_pascal_case}}Artboard{{artboard_pascal_case}}();
   {{/artboards}}
 }
 
 {{#artboards}}
-/// Metadata for the "{{artboard_variable}}" artboard.
-class _{{riv_class}}Artboard{{artboard_class_name}} {
-  const _{{riv_class}}Artboard{{artboard_class_name}}();
+/// Metadata for the "{{artboard_camel_case}}" artboard.
+class _{{riv_pascal_case}}Artboard{{artboard_pascal_case}} {
+  const _{{riv_pascal_case}}Artboard{{artboard_pascal_case}}();
 
   String get name => '{{artboard_name}}';
 
-  _{{riv_class}}{{artboard_class_name}}Animations get animations => const _{{riv_class}}{{artboard_class_name}}Animations();
-  _{{riv_class}}{{artboard_class_name}}StateMachines get stateMachines => const _{{riv_class}}{{artboard_class_name}}StateMachines();
+  _{{riv_pascal_case}}{{artboard_pascal_case}}Animations get animations => const _{{riv_pascal_case}}{{artboard_pascal_case}}Animations();
+  _{{riv_pascal_case}}{{artboard_pascal_case}}StateMachines get stateMachines => const _{{riv_pascal_case}}{{artboard_pascal_case}}StateMachines();
 }
 
-/// Container for animation names in the "{{artboard_variable}}" artboard.
-class _{{riv_class}}{{artboard_class_name}}Animations {
-  const _{{riv_class}}{{artboard_class_name}}Animations();
+/// Container for animation names in the "{{artboard_camel_case}}" artboard.
+class _{{riv_pascal_case}}{{artboard_pascal_case}}Animations {
+  const _{{riv_pascal_case}}{{artboard_pascal_case}}Animations();
 
   {{#animations}}
-  String get {{animation_variable}} => '{{animation_name}}';
+  String get {{animation_camel_case}} => '{{animation_name}}';
   {{/animations}}
 }
 
-/// Container for state machines in the "{{artboard_variable}}" artboard.
-class _{{riv_class}}{{artboard_class_name}}StateMachines {
-  const _{{riv_class}}{{artboard_class_name}}StateMachines();
+/// Container for state machines in the "{{artboard_camel_case}}" artboard.
+class _{{riv_pascal_case}}{{artboard_pascal_case}}StateMachines {
+  const _{{riv_pascal_case}}{{artboard_pascal_case}}StateMachines();
 
   {{#state_machines}}
-  _{{riv_class}}{{artboard_class_name}}{{state_machine_variable}} get {{state_machine_variable}} => const _{{riv_class}}{{artboard_class_name}}{{state_machine_variable}}();
+  _{{riv_pascal_case}}{{artboard_pascal_case}}{{state_machine_camel_case}} get {{state_machine_camel_case}} => const _{{riv_pascal_case}}{{artboard_pascal_case}}{{state_machine_camel_case}}();
   {{/state_machines}}
 }
 
 {{#state_machines}}
-/// Metadata for the "{{state_machine_variable}}" state machine.
-class _{{riv_class}}{{artboard_class_name}}{{state_machine_variable}} {
-  const _{{riv_class}}{{artboard_class_name}}{{state_machine_variable}}();
+/// Metadata for the "{{state_machine_camel_case}}" state machine.
+class _{{riv_pascal_case}}{{artboard_pascal_case}}{{state_machine_camel_case}} {
+  const _{{riv_pascal_case}}{{artboard_pascal_case}}{{state_machine_camel_case}}();
 
   String get name => '{{state_machine_name}}';
 }

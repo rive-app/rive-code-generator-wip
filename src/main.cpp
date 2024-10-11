@@ -84,16 +84,16 @@ std::string toPascalCase(const std::string &str)
 struct ArtboardData
 {
     std::string artboard_name;
-    std::string artboard_class_name;
-    std::string artboard_variable;
+    std::string artboard_pascal_case;
+    std::string artboard_camel_case;
     std::vector<std::string> animations;
     std::vector<std::string> state_machines;
 };
 
 struct RiveFileData
 {
-    std::string riv_class;
-    std::string riv_variable;
+    std::string riv_pascal_case;
+    std::string riv_camel_case;
     std::vector<ArtboardData> artboards;
 };
 
@@ -203,8 +203,8 @@ std::optional<RiveFileData> process_riv_file(const std::string &rive_file_path)
     std::filesystem::path path(rive_file_path);
     std::string file_name_without_extension = path.stem().string();
     RiveFileData file_data;
-    file_data.riv_class = toPascalCase(file_name_without_extension);
-    file_data.riv_variable = toCamelCase(file_name_without_extension);
+    file_data.riv_pascal_case = toPascalCase(file_name_without_extension);
+    file_data.riv_camel_case = toCamelCase(file_name_without_extension);
 
     std::unordered_set<std::string> usedArtboardNames;
 
@@ -214,16 +214,16 @@ std::optional<RiveFileData> process_riv_file(const std::string &rive_file_path)
         auto artboard = riveFile->artboardAt(i);
         std::string artboard_name = artboard->name();
 
-        std::string artboard_class_name = toPascalCase(artboard_name);
-        std::string artboard_variable = toCamelCase(artboard_name);
+        std::string artboard_pascal_case = toPascalCase(artboard_name);
+        std::string artboard_camel_case = toCamelCase(artboard_name);
 
         // Ensure unique artboard variable names
-        artboard_variable = makeUnique(artboard_variable, usedArtboardNames);
+        artboard_camel_case = makeUnique(artboard_camel_case, usedArtboardNames);
 
         std::vector<std::string> animations = get_animations_from_artboard(artboard.get());
         std::vector<std::string> state_machines = get_state_machines_from_artboard(artboard.get());
 
-        file_data.artboards.push_back({artboard_name, artboard_class_name, artboard_variable, animations, state_machines});
+        file_data.artboards.push_back({artboard_name, artboard_pascal_case, artboard_camel_case, animations, state_machines});
     }
 
     return file_data;
@@ -329,8 +329,8 @@ int main(int argc, char *argv[])
     {
         const auto &file_data = rive_file_data_list[file_index];
         kainjow::mustache::data riv_file_data;
-        riv_file_data["riv_class"] = file_data.riv_class;
-        riv_file_data["riv_variable"] = file_data.riv_variable;
+        riv_file_data["riv_pascal_case"] = file_data.riv_pascal_case;
+        riv_file_data["riv_camel_case"] = file_data.riv_camel_case;
         riv_file_data["last"] = (file_index == rive_file_data_list.size() - 1);
 
         std::vector<kainjow::mustache::data> artboard_list;
@@ -339,8 +339,8 @@ int main(int argc, char *argv[])
             const auto &artboard = file_data.artboards[artboard_index];
             kainjow::mustache::data artboard_data;
             artboard_data["artboard_name"] = artboard.artboard_name;
-            artboard_data["artboard_class_name"] = artboard.artboard_class_name;
-            artboard_data["artboard_variable"] = artboard.artboard_variable;
+            artboard_data["artboard_pascal_case"] = artboard.artboard_pascal_case;
+            artboard_data["artboard_camel_case"] = artboard.artboard_camel_case;
             artboard_data["last"] = (artboard_index == file_data.artboards.size() - 1);
 
             std::unordered_set<std::string> usedAnimationNames;
@@ -350,7 +350,7 @@ int main(int argc, char *argv[])
                 const auto &animation = artboard.animations[anim_index];
                 kainjow::mustache::data anim_data;
                 anim_data["animation_name"] = animation;
-                anim_data["animation_variable"] = makeUnique(toCamelCase(animation), usedAnimationNames);
+                anim_data["animation_camel_case"] = makeUnique(toCamelCase(animation), usedAnimationNames);
                 anim_data["last"] = (anim_index == artboard.animations.size() - 1);
                 animations.push_back(anim_data);
             }
@@ -363,7 +363,7 @@ int main(int argc, char *argv[])
                 const auto &state_machine = artboard.state_machines[sm_index];
                 kainjow::mustache::data state_machine_data;
                 state_machine_data["state_machine_name"] = state_machine;
-                state_machine_data["state_machine_variable"] = makeUnique(toCamelCase(state_machine), usedStateMachineNames);
+                state_machine_data["state_machine_camel_case"] = makeUnique(toCamelCase(state_machine), usedStateMachineNames);
                 state_machine_data["last"] = (sm_index == artboard.state_machines.size() - 1);
                 state_machines.push_back(state_machine_data);
             }

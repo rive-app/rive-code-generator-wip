@@ -1,19 +1,19 @@
 {
   "riveMeta": {
     {{#riv_files}}
-    "{{riv_variable}}": {
+    "{{riv_camel_case}}": {
       "artboards": {
         {{#artboards}}
-        "{{artboard_variable}}": {
+        "{{artboard_camel_case}}": {
           "name": "{{artboard_name}}",
           "animations": {
             {{#animations}}
-            "{{animation_variable}}": "{{animation_name}}"{{^last}},{{/last}}
+            "{{animation_camel_case}}": "{{animation_name}}"{{^last}},{{/last}}
             {{/animations}}
           },
           "stateMachines": {
             {{#state_machines}}
-            "{{state_machine_variable}}": {
+            "{{state_machine_camel_case}}": {
               "name": "{{state_machine_name}}"
             }{{^last}},{{/last}}
             {{/state_machines}}
