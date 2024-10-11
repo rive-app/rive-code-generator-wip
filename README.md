@@ -12,6 +12,8 @@ This tool parses Rive (`.riv`) files and extracts component names, artboards, st
 
 The tool uses [Mustache](https://mustache.github.io/) templating for flexible output generation.
 
+:warning: Note that this tool is still experimental and untested. Feedback and contributions are appreciated.
+
 ## Build Instructions
 
 ### Prerequisites
@@ -101,7 +103,7 @@ For each Rive file `{{#riv_files}}`, the following variables are available:
         - `{{text_value_run_default}}`: Default value of the text value run
         - `{{text_value_run_default_sanitized}}`: Default value of the text value run with special characters encoded
 
-**Warning:** For duplicated names (e.g., multiple artboards or animations with the same name), the original unique names will be preserved. However, the case-converted versions (such as camelCase, PascalCase, etc.) will have a unique identifier attached to avoid conflicts.
+**:warning: Warning:** For duplicated names (e.g., multiple artboards or animations with the same name), the original unique names will be preserved. However, the case-converted versions (such as camelCase, PascalCase, etc.) will have a unique identifier attached to avoid conflicts.
 
 For example:
 - Original names: "MyArtboard", "MyArtboard"
