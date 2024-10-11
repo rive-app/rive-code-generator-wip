@@ -1,0 +1,6 @@
+# build
+build/out
+build/macosx
+
+# testing
+samples/
