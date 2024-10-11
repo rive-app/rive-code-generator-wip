@@ -1,15 +1,16 @@
 # Rive Code Generator
 
-A command-line tool to simplify the process of integrating Rive graphcis at runtime.
+A command-line tool to simplify the integration of Rive graphics at runtime.
 
-This tool allows you to parse Rive (`.riv`) files and extract component names, artboards, state machine inputs, etc in a human readable format. This tool can help you:
-- Create type-safe wrappers for your `.riv` files, such as static helper classes
-- Provides type-safe access to artboards, animations, and state machines
-- Generate a `JSON` representation of your `.riv` files
-- Diff `.riv` files for version control purposes
-- Generate complete code components
+This tool parses Rive (`.riv`) files and extracts component names, artboards, state machine inputs, and other elements in a human-readable format. Key features include:
 
-This tool makes use of [Mustache](https://mustache.github.io/) templating.
+- Creating type-safe wrappers for `.riv` files (e.g., static helper classes)
+- Providing type-safe access to artboards, animations, and state machines
+- Generating JSON representations of `.riv` files
+- Diffing `.riv` files for version control purposes
+- Generating complete code components
+
+The tool uses [Mustache](https://mustache.github.io/) templating for flexible output generation.
 
 ## Build Instructions
 
@@ -19,52 +20,90 @@ This tool makes use of [Mustache](https://mustache.github.io/) templating.
 - C++ compiler with C++17 support
 - Rive C++ Runtime library
 
-Run the build script:
-```
+### Building
+
+To build the debug version:
+```sh
 cd build && ./build.sh
 ```
 
-To build for release:
-```
+For the release version:
+```sh
 cd build && ./build.sh release
 ```
 
-This will compile the code generator and create the executable in the `build/out/lib/debug` or `build/out/lib/release` directory.
+The executable will be created in `build/out/lib/debug` or `build/out/lib/release`.
 
 ## Usage
 
-After building, run the code generator with the following syntax:
-
-Debug:
+Run the code generator using:
 
 ```sh
-./build/out/lib/debug/rive_code_generator -i <input_rive_file> -o <output_directory> -l <language>
+./build/out/lib/<debug|release>/rive_code_generator -i <input_rive_file> -o <output_directory> -l <language>
 ```
 
-Release:
+Example:
+```sh
+./build/out/lib/release/rive_code_generator -i ./examples/rive_files/animation.riv -o ./examples/generated_code.dart -l dart
+```
+
+## Custom Templates
+
+You can use custom Mustache templates for code generation:
 
 ```sh
-./build/out/lib/release/rive_code_generator -i <input_rive_file> -o <output_directory> -l <language>
+./build/out/lib/release/rive_code_generator -i ./rive_files/ -o ./output/rive.json -t templates/json_template.mustache
 ```
 
-Replace `<input_rive_file>`, `<output_directory>`, and `<language>` with your specific values.
+Sample templates are available in the [`templates`](./templates) directory.
+
+### Template Syntax
+
+The tool uses [Mustache](https://mustache.github.io/) templating. Please refer to the [Mustache documentation](https://mustache.github.io/) for syntax details.
+
+Available variables:
+
+- `{{riv_pascal_case}}`: The Rive file name in PascalCase
+- `{{riv_camel_case}}`: The Rive file name in camelCase
+- `{{riv_snake_case}}`: The Rive file name in snake_case
+- `{{riv_kebab_case}}`: The Rive file name in kebab-case
+
+For each artboard:
+- `{{artboard_name}}`: The original artboard name
+- `{{artboard_pascal_case}}`: The artboard name in PascalCase
+- `{{artboard_camel_case}}`: The artboard name in camelCase
+- `{{artboard_snake_case}}`: The artboard name in snake_case
+- `{{artboard_kebab_case}}`: The artboard name in kebab-case
+- `{{animations}}`: List of animation names for the artboard
+- `{{state_machines}}`: List of state machines for the artboard
+  - For each state machine:
+    - `{{name}}`: Name of the state machine
+    - `{{inputs}}`: List of inputs for the state machine
+      - For each input:
+        - `{{name}}`: Name of the input
+        - `{{type}}`: Type of the input
+        - `{{default_value}}`: Default value of the input
+- `{{text_value_runs}}`: List of text value runs for the artboard
+  - For each text value run:
+    - `{{name}}`: Name of the text value run
+    - `{{default_value}}`: Default value of the text value run
+
+**Warning:** For duplicated names (e.g., multiple artboards or animations with the same name), the original unique names will be preserved. However, the case-converted versions (such as camelCase, PascalCase, etc.) will have a unique identifier attached to avoid conflicts.
 
 For example:
+- Original names: "MyArtboard", "MyArtboard"
+- Unique camelCase: "myArtboard", "myArtboardU1"
 
-```sh
-./build/rive_code_generator -i ./examples/rive_files/animation.riv -o ./examples/generated_code.dart -l dart
-```
+This ensures that all generated code and references remain unique and valid.
 
-## Templates
+## Supported Languages
 
-Optionally, you can provide a custom template file to use for the generated code. Specify the template file with the `-t` option which the path to the file.
+At the moment, the tool supports Dart and JSON outputs. More defualt exports will be added. However, you can easily add your own by providing a custom template.
 
-```sh
-./build/rive_code_generator -i ./rive_files/ -o ./output/rive.json -t templates/json_template.mustache
-```
+## Contributing
 
-For examples of custom templates, please check the [`templates`](./templates) directory in this repository. You'll find sample templates for various output formats and languages.
+Contributions are welcome! Please see our [Contributing Guidelines](CONTRIBUTING.md) for more details.
 
 ## License
 
-MIT
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
