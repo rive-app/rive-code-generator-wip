@@ -18,24 +18,24 @@ A command-line tool for generating static helper code for Rive animations. This 
 
 To build the code generator, follow these steps:
 
-1. Navigate to the `code_generator` directory:
+1. Run the build script:
    ```
-   cd code_generator
-   ```
-
-2. Run the build script:
-   ```
-   ./build/build.sh
+   cd build && ./build.sh
    ```
 
-This will compile the code generator and create the executable.
+This will compile the code generator and create the executable in the `build/out/lib` directory.
 
 ## Usage
 
 After building, run the code generator with the following syntax:
 
+Debug:
 ```
-./build/rive_code_generator -i <input_rive_file> -o <output_directory> -l <language>
+./build/out/lib/debug/rive_code_generator -i <input_rive_file> -o <output_directory> -l <language>
+```
+Release:
+```
+./build/out/lib/release/rive_code_generator -i <input_rive_file> -o <output_directory> -l <language>
 ```
 
 Replace `<input_rive_file>`, `<output_directory>`, and `<language>` with your specific values.

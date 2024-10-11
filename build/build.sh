@@ -45,7 +45,7 @@ make -C $OUT -j$(($(sysctl -n hw.physicalcpu) + 1))
 
 for var in "$@"; do
     if [[ $var = "run" ]]; then
-        $OUT/rive_code_generator
+        $OUT/rive_code_generator --help
     fi
     if [[ $var = "dev" ]]; then
         # $OUT/rive_code_generator -i ../samples/signage_v03.riv -o out/rive_generated.dart -t ../templates/dart_template.mustache
