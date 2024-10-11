@@ -21,7 +21,8 @@ enum class CaseStyle
 {
     Camel,
     Pascal,
-    // Add future case styles here, e.g., Snake, Kebab, etc.
+    Snake,
+    Kebab,
 };
 
 // Helper function to convert a string to the specified case style
@@ -29,12 +30,14 @@ std::string toCaseHelper(const std::string &str, CaseStyle style)
 {
     std::stringstream result;
     bool capitalizeNext = (style == CaseStyle::Pascal);
+    bool firstChar = true;
 
     // Check if the first character is a digit
     if (std::isdigit(str[0]))
     {
         result << 'n';         // Prepend 'n' for number
         capitalizeNext = true; // Capitalize the first digit
+        firstChar = false;
     }
 
     // Process the string
@@ -53,10 +56,26 @@ std::string toCaseHelper(const std::string &str, CaseStyle style)
             {
                 result << (style == CaseStyle::Pascal ? c : (char)std::tolower(c));
             }
+            firstChar = false;
         }
         else if (c == ' ' || c == '_' || c == '-')
         {
-            capitalizeNext = true;
+            if (!firstChar)
+            {
+                switch (style)
+                {
+                    case CaseStyle::Camel:
+                    case CaseStyle::Pascal:
+                        capitalizeNext = true;
+                        break;
+                    case CaseStyle::Snake:
+                        result << '_';
+                        break;
+                    case CaseStyle::Kebab:
+                        result << '-';
+                        break;
+                }
+            }
         }
         // All other characters are ignored
     }
@@ -81,19 +100,35 @@ std::string toPascalCase(const std::string &str)
     return toCaseHelper(str, CaseStyle::Pascal);
 }
 
+std::string toSnakeCase(const std::string &str)
+{
+    return toCaseHelper(str, CaseStyle::Snake);
+}
+
+std::string toKebabCase(const std::string &str)
+{
+    return toCaseHelper(str, CaseStyle::Kebab);
+}
+
+// Update the ArtboardData struct
 struct ArtboardData
 {
     std::string artboard_name;
     std::string artboard_pascal_case;
     std::string artboard_camel_case;
+    std::string artboard_snake_case;
+    std::string artboard_kebab_case;
     std::vector<std::string> animations;
     std::vector<std::string> state_machines;
 };
 
+// Update the RiveFileData struct
 struct RiveFileData
 {
     std::string riv_pascal_case;
     std::string riv_camel_case;
+    std::string riv_snake_case;
+    std::string riv_kebab_case;
     std::vector<ArtboardData> artboards;
 };
 
@@ -205,6 +240,8 @@ std::optional<RiveFileData> process_riv_file(const std::string &rive_file_path)
     RiveFileData file_data;
     file_data.riv_pascal_case = toPascalCase(file_name_without_extension);
     file_data.riv_camel_case = toCamelCase(file_name_without_extension);
+    file_data.riv_snake_case = toSnakeCase(file_name_without_extension);
+    file_data.riv_kebab_case = toKebabCase(file_name_without_extension);
 
     std::unordered_set<std::string> usedArtboardNames;
 
@@ -216,6 +253,8 @@ std::optional<RiveFileData> process_riv_file(const std::string &rive_file_path)
 
         std::string artboard_pascal_case = toPascalCase(artboard_name);
         std::string artboard_camel_case = toCamelCase(artboard_name);
+        std::string artboard_snake_case = toSnakeCase(artboard_name);
+        std::string artboard_kebab_case = toKebabCase(artboard_name);
 
         // Ensure unique artboard variable names
         artboard_camel_case = makeUnique(artboard_camel_case, usedArtboardNames);
@@ -223,7 +262,7 @@ std::optional<RiveFileData> process_riv_file(const std::string &rive_file_path)
         std::vector<std::string> animations = get_animations_from_artboard(artboard.get());
         std::vector<std::string> state_machines = get_state_machines_from_artboard(artboard.get());
 
-        file_data.artboards.push_back({artboard_name, artboard_pascal_case, artboard_camel_case, animations, state_machines});
+        file_data.artboards.push_back({artboard_name, artboard_pascal_case, artboard_camel_case, artboard_snake_case, artboard_kebab_case, animations, state_machines});
     }
 
     return file_data;
@@ -331,6 +370,8 @@ int main(int argc, char *argv[])
         kainjow::mustache::data riv_file_data;
         riv_file_data["riv_pascal_case"] = file_data.riv_pascal_case;
         riv_file_data["riv_camel_case"] = file_data.riv_camel_case;
+        riv_file_data["riv_snake_case"] = file_data.riv_snake_case;
+        riv_file_data["riv_kebab_case"] = file_data.riv_kebab_case;
         riv_file_data["last"] = (file_index == rive_file_data_list.size() - 1);
 
         std::vector<kainjow::mustache::data> artboard_list;
@@ -341,6 +382,8 @@ int main(int argc, char *argv[])
             artboard_data["artboard_name"] = artboard.artboard_name;
             artboard_data["artboard_pascal_case"] = artboard.artboard_pascal_case;
             artboard_data["artboard_camel_case"] = artboard.artboard_camel_case;
+            artboard_data["artboard_snake_case"] = artboard.artboard_snake_case;
+            artboard_data["artboard_kebab_case"] = artboard.artboard_kebab_case;
             artboard_data["last"] = (artboard_index == file_data.artboards.size() - 1);
 
             std::unordered_set<std::string> usedAnimationNames;
