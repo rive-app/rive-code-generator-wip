@@ -61,32 +61,45 @@ Sample templates are available in the [`templates`](./templates) directory.
 
 The tool uses [Mustache](https://mustache.github.io/) templating. Please refer to the [Mustache documentation](https://mustache.github.io/) for syntax details.
 
-Available variables:
-
+For each Rive file `{{#riv_files}}`, the following variables are available:
 - `{{riv_pascal_case}}`: The Rive file name in PascalCase
 - `{{riv_camel_case}}`: The Rive file name in camelCase
 - `{{riv_snake_case}}`: The Rive file name in snake_case
 - `{{riv_kebab_case}}`: The Rive file name in kebab-case
-
-For each artboard:
-- `{{artboard_name}}`: The original artboard name
-- `{{artboard_pascal_case}}`: The artboard name in PascalCase
-- `{{artboard_camel_case}}`: The artboard name in camelCase
-- `{{artboard_snake_case}}`: The artboard name in snake_case
-- `{{artboard_kebab_case}}`: The artboard name in kebab-case
-- `{{animations}}`: List of animation names for the artboard
-- `{{state_machines}}`: List of state machines for the artboard
-  - For each state machine:
-    - `{{name}}`: Name of the state machine
-    - `{{inputs}}`: List of inputs for the state machine
-      - For each input:
-        - `{{name}}`: Name of the input
-        - `{{type}}`: Type of the input
-        - `{{default_value}}`: Default value of the input
-- `{{text_value_runs}}`: List of text value runs for the artboard
-  - For each text value run:
-    - `{{name}}`: Name of the text value run
-    - `{{default_value}}`: Default value of the text value run
+- For each artboard `{{#artboards}}`:
+    - `{{artboard_name}}`: The original artboard name
+    - `{{artboard_pascal_case}}`: The artboard name in PascalCase
+    - `{{artboard_camel_case}}`: The artboard name in camelCase
+    - `{{artboard_snake_case}}`: The artboard name in snake_case
+    - `{{artboard_kebab_case}}`: The artboard name in kebab-case
+    - `{{animations}}`: List of animation names for the artboard
+    - For each animation `{{#animations}}`:
+        - `{{animation_name}}`: Name of the animation
+        - `{{animation_camel_case}}`: Name of the animation in camelCase
+        - `{{animation_pascal_case}}`: Name of the animation in PascalCase
+        - `{{animation_snake_case}}`: Name of the animation in snake_case
+        - `{{animation_kebab_case}}`: Name of the animation in kebab-case
+    - `{{state_machines}}`: List of state machines for the artboard
+    - For each state machine `{{#state_machines}}`:
+        - `{{state_machine_name}}`: Name of the state machine
+        - `{{state_machine_camel_case}}`: Name of the state machine in camelCase
+        - `{{state_machine_pascal_case}}`: Name of the state machine in PascalCase
+        - `{{state_machine_snake_case}}`: Name of the state machine in snake_case
+        - `{{state_machine_kebab_case}}`: Name of the state machine in kebab-case
+        - `{{inputs}}`: List of inputs for the state machine
+        - For each input `{{#inputs}}`:
+            - `{{input_name}}`: Name of the input
+            - `{{input_type}}`: Type of the input
+            - `{{input_default_value}}`: Default value of the input
+    - `{{text_value_runs}}`: List of text value runs for the artboard
+    - For each text value run `{{#text_value_runs}}`:
+        - `{{text_value_run_name}}`: Name of the text value run
+        - `{{text_value_run_camel_case}}`: Name of the text value run in camelCase
+        - `{{text_value_run_pascal_case}}`: Name of the text value run in PascalCase
+        - `{{text_value_run_snake_case}}`: Name of the text value run in snake_case
+        - `{{text_value_run_kebab_case}}`: Name of the text value run in kebab-case
+        - `{{text_value_run_default}}`: Default value of the text value run
+        - `{{text_value_run_default_sanitized}}`: Default value of the text value run with special characters encoded
 
 **Warning:** For duplicated names (e.g., multiple artboards or animations with the same name), the original unique names will be preserved. However, the case-converted versions (such as camelCase, PascalCase, etc.) will have a unique identifier attached to avoid conflicts.
 
