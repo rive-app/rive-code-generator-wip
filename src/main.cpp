@@ -7,6 +7,10 @@
 #include "rive/file.hpp"
 #include "rive/animation/linear_animation_instance.hpp"
 #include "rive/animation/state_machine_instance.hpp"
+#include "rive/animation/state_machine_input_instance.hpp"
+#include "rive/generated/animation/state_machine_bool_base.hpp"
+#include "rive/generated/animation/state_machine_number_base.hpp"
+#include "rive/generated/animation/state_machine_trigger_base.hpp"
 #include "utils/no_op_factory.hpp"
 #include <cctype>
 #include <sstream>
@@ -32,6 +36,12 @@ enum class Language
     JavaScript
 };
 
+// Define the custom struct for input information
+struct InputInfo {
+    std::string name;
+    std::string type;
+};
+
 struct ArtboardData
 {
     std::string artboard_name;
@@ -40,7 +50,7 @@ struct ArtboardData
     std::string artboard_snake_case;
     std::string artboard_kebab_case;
     std::vector<std::string> animations;
-    std::vector<std::string> state_machines;
+    std::vector<std::pair<std::string, std::vector<InputInfo>>> state_machines;
 };
 
 struct RiveFileData
@@ -173,18 +183,42 @@ static std::vector<std::string> get_animations_from_artboard(rive::ArtboardInsta
     return animations;
 }
 
-std::vector<std::string> get_state_machines_from_artboard(rive::ArtboardInstance *artboard)
+std::vector<std::pair<std::string, std::vector<InputInfo>>> get_state_machines_from_artboard(rive::ArtboardInstance *artboard)
 {
-    std::vector<std::string> state_machines;
+    std::vector<std::pair<std::string, std::vector<InputInfo>>> state_machines;
     auto stateMachineCount = artboard->stateMachineCount();
     for (int i = 0; i < stateMachineCount; i++)
     {
         auto stateMachine = artboard->stateMachineAt(i);
         std::string state_machine_name = stateMachine->name();
 
-        std::string state_machine_variable = state_machine_name;
+        std::vector<InputInfo> inputs;
+        auto inputCount = stateMachine->inputCount();
+        for (int j = 0; j < inputCount; j++)
+        {
+            auto input = stateMachine->input(j);
+           
+            std::string inputType;
+            
+            // Determine the input type
+            switch (input->inputCoreType()) {
+                case rive::StateMachineNumberBase::typeKey:
+                    inputType = "number";
+                    break;
+                case rive::StateMachineTriggerBase::typeKey:
+                    inputType = "trigger";
+                    break;
+                case rive::StateMachineBoolBase::typeKey:
+                    inputType = "boolean";
+                    break;
+                default:
+                    inputType = "unknown";
+            }
 
-        state_machines.push_back(state_machine_variable);
+            inputs.push_back({input->name(), inputType});
+        }
+
+        state_machines.emplace_back(state_machine_name, inputs);
     }
     return state_machines;
 }
@@ -265,7 +299,7 @@ std::optional<RiveFileData> process_riv_file(const std::string &rive_file_path)
         artboard_camel_case = makeUnique(artboard_camel_case, usedArtboardNames);
 
         std::vector<std::string> animations = get_animations_from_artboard(artboard.get());
-        std::vector<std::string> state_machines = get_state_machines_from_artboard(artboard.get());
+        std::vector<std::pair<std::string, std::vector<InputInfo>>> state_machines = get_state_machines_from_artboard(artboard.get());
 
         file_data.artboards.push_back({artboard_name, artboard_pascal_case, artboard_camel_case, artboard_snake_case, artboard_kebab_case, animations, state_machines});
     }
@@ -390,8 +424,12 @@ int main(int argc, char *argv[])
             {
                 const auto &animation = artboard.animations[anim_index];
                 kainjow::mustache::data anim_data;
+                auto unique_name = makeUnique(animation, usedAnimationNames);
                 anim_data["animation_name"] = animation;
-                anim_data["animation_camel_case"] = makeUnique(toCamelCase(animation), usedAnimationNames);
+                anim_data["animation_camel_case"] = toCamelCase(unique_name);
+                anim_data["animation_pascal_case"] = toPascalCase(unique_name);
+                anim_data["animation_snake_case"] = toSnakeCase(unique_name);
+                anim_data["animation_kebab_case"] = toKebabCase(unique_name);
                 anim_data["last"] = (anim_index == artboard.animations.size() - 1);
                 animations.push_back(anim_data);
             }
@@ -403,9 +441,32 @@ int main(int argc, char *argv[])
             {
                 const auto &state_machine = artboard.state_machines[sm_index];
                 kainjow::mustache::data state_machine_data;
-                state_machine_data["state_machine_name"] = state_machine;
-                state_machine_data["state_machine_camel_case"] = makeUnique(toCamelCase(state_machine), usedStateMachineNames);
+                auto unique_name = makeUnique(state_machine.first, usedStateMachineNames);
+                state_machine_data["state_machine_name"] = state_machine.first;
+                state_machine_data["state_machine_camel_case"] = toCamelCase(unique_name);
+                state_machine_data["state_machine_pascal_case"] = toPascalCase(unique_name);
+                state_machine_data["state_machine_snake_case"] = toSnakeCase(unique_name);
+                state_machine_data["state_machine_kebab_case"] = toKebabCase(unique_name);
                 state_machine_data["last"] = (sm_index == artboard.state_machines.size() - 1);
+
+                std::unordered_set<std::string> usedInputNames;
+                std::vector<kainjow::mustache::data> inputs;
+                for (size_t input_index = 0; input_index < state_machine.second.size(); input_index++)
+                {
+                    const auto &input = state_machine.second[input_index];
+                    kainjow::mustache::data input_data;
+                    auto unique_name = makeUnique(input.name, usedInputNames);
+                    input_data["input_name"] = input.name;
+                    input_data["input_camel_case"] = toCamelCase(unique_name);
+                    input_data["input_pascal_case"] = toPascalCase(unique_name);
+                    input_data["input_snake_case"] = toSnakeCase(unique_name);
+                    input_data["input_kebab_case"] = toKebabCase(unique_name);
+                    input_data["input_type"] = input.type;
+                    input_data["last"] = (input_index == state_machine.second.size() - 1);
+                    inputs.push_back(input_data);
+                }
+                state_machine_data["inputs"] = inputs;
+
                 state_machines.push_back(state_machine_data);
             }
             artboard_data["state_machines"] = state_machines;
