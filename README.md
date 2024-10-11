@@ -1,20 +1,23 @@
 # Rive Code Generator
 
-A command-line tool for generating static helper code for Rive animations. This tool simplifies the process of integrating Rive animations into your projects by creating type-safe wrappers for your Rive files.
+A command-line tool to simplify the process of integrating Rive graphcis at runtime.
 
-## Features
-
-- Generates static helper classes for Rive animations
+This tool allows you to parse Rive (`.riv`) files and extract component names, artboards, state machine inputs, etc in a human readable format. This tool can help you:
+- Create type-safe wrappers for your `.riv` files, such as static helper classes
 - Provides type-safe access to artboards, animations, and state machines
-- Supports multiple output languages (e.g., Dart, TypeScript)
+- Generate a `JSON` representation of your `.riv` files
+- Diff `.riv` files for version control purposes
+- Generate complete code components
 
-## Prerequisites
+This tool makes use of [Mustache](https://mustache.github.io/) templating.
+
+## Build Instructions
+
+### Prerequisites
 
 - CMake (version 3.10 or higher)
 - C++ compiler with C++17 support
 - Rive C++ Runtime library
-
-## Build Instructions
 
 Run the build script:
 ```
