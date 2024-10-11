@@ -2,5 +2,5 @@
 build/out
 build/macosx
 
-# testing
-samples/
+# examples
+examples/generated/
