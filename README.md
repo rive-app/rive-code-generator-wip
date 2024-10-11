@@ -52,11 +52,15 @@ For example:
 ./build/rive_code_generator -i ./examples/rive_files/animation.riv -o ./examples/generated_code.dart -l dart
 ```
 
+## Templates
+
 Optionally, you can provide a custom template file to use for the generated code. Specify the template file with the `-t` option which the path to the file.
 
 ```sh
 ./build/rive_code_generator -i ./rive_files/ -o ./output/rive.json -t templates/json_template.mustache
-```
+
+For examples of custom templates, please check the [`templates`](./templates) directory in this repository. You'll find sample templates for various output formats and languages.
+
 ## License
 
 MIT
