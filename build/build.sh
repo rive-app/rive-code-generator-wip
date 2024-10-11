@@ -2,14 +2,16 @@
 set -e
 echo "Building rive_code_generator"
 
-if [[ "$OSTYPE" == "darwin"* ]]; then
-    # macOS-specific code
-    echo "Detected macOS. Running macOS build script..."
-    source ../rive-runtime/dependencies/macosx/config_directories.sh
-else
-    echo "This script currently only supports macOS."
-    exit 1
-fi
+
+source ../rive-runtime/dependencies/config_directories.sh
+# if [[ "$OSTYPE" == "darwin"* ]]; then
+#     # macOS-specific code
+#     echo "Detected macOS. Running macOS build script..."
+#     source ../rive-runtime/dependencies/macosx/config_directories.sh
+# else
+#     echo "This script currently only supports macOS."
+#     exit 1
+# fi
 
 CONFIG=debug
 
