@@ -40,6 +40,7 @@ enum class Language
 struct InputInfo {
     std::string name;
     std::string type;
+    std::string default_value;
 };
 
 struct ArtboardData
@@ -199,23 +200,39 @@ std::vector<std::pair<std::string, std::vector<InputInfo>>> get_state_machines_f
             auto input = stateMachine->input(j);
            
             std::string inputType;
+            std::string defaultValue;
             
-            // Determine the input type
+            // Determine the input type and default value
             switch (input->inputCoreType()) {
                 case rive::StateMachineNumberBase::typeKey:
+                {
+                    auto smiNumberInput = static_cast<rive::SMINumber*>(input);
                     inputType = "number";
+                    defaultValue = std::to_string(smiNumberInput->value());
                     break;
+                }
                 case rive::StateMachineTriggerBase::typeKey:
+                {
                     inputType = "trigger";
+                    defaultValue = "false";
                     break;
+                }
                 case rive::StateMachineBoolBase::typeKey:
+                {
+                    auto smiBoolInput = static_cast<rive::SMIBool*>(input);
                     inputType = "boolean";
+                    defaultValue = smiBoolInput->value() ? "true" : "false";
                     break;
+                }
                 default:
+                {
                     inputType = "unknown";
+                    defaultValue = "";
+                    break;
+                }
             }
 
-            inputs.push_back({input->name(), inputType});
+            inputs.push_back({input->name(), inputType, defaultValue});
         }
 
         state_machines.emplace_back(state_machine_name, inputs);
@@ -462,6 +479,7 @@ int main(int argc, char *argv[])
                     input_data["input_snake_case"] = toSnakeCase(unique_name);
                     input_data["input_kebab_case"] = toKebabCase(unique_name);
                     input_data["input_type"] = input.type;
+                    input_data["input_default_value"] = input.default_value;
                     input_data["last"] = (input_index == state_machine.second.size() - 1);
                     inputs.push_back(input_data);
                 }

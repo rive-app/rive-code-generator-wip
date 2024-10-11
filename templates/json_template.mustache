@@ -19,7 +19,8 @@
                 {{#inputs}}
                 "{{input_camel_case}}": {
                   "name": "{{input_name}}",
-                  "type": "{{input_type}}"
+                  "type": "{{input_type}}",
+                  "defaultValue": "{{input_default_value}}"
                 }{{^last}},{{/last}}
                 {{/inputs}}
               }
