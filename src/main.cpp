@@ -43,6 +43,11 @@ struct InputInfo {
     std::string default_value;
 };
 
+struct TextValueRunInfo {
+    std::string name;
+    std::string default_value;
+};
+
 struct ArtboardData
 {
     std::string artboard_name;
@@ -52,6 +57,7 @@ struct ArtboardData
     std::string artboard_kebab_case;
     std::vector<std::string> animations;
     std::vector<std::pair<std::string, std::vector<InputInfo>>> state_machines;
+    std::vector<TextValueRunInfo> text_value_runs;
 };
 
 struct RiveFileData
@@ -146,6 +152,28 @@ std::string toSnakeCase(const std::string &str)
 std::string toKebabCase(const std::string &str)
 {
     return toCaseHelper(str, CaseStyle::Kebab);
+}
+
+std::string sanitizeString(const std::string& input) {
+    std::string output;
+    for (char c : input) {
+        switch (c) {
+            case '\n': output += "\\n"; break;
+            case '\r': output += "\\r"; break;
+            case '\t': output += "\\t"; break;
+            case '\"': output += "\\\""; break;
+            case '\\': output += "\\\\"; break;
+            default:
+                if (std::isprint(c)) {
+                    output += c;
+                } else {
+                    char hex[7];
+                    std::snprintf(hex, sizeof(hex), "\\u%04x", static_cast<unsigned char>(c));
+                    output += hex;
+                }
+        }
+    }
+    return output;
 }
 
 static std::unique_ptr<rive::File> open_file(const char name[])
@@ -275,6 +303,35 @@ std::string makeUnique(const std::string &base, std::unordered_set<std::string> 
     return uniqueName;
 }
 
+
+template <typename T = rive::Component>
+void findAll(std::vector<T*>& results, rive::ArtboardInstance *artboard)
+{
+    for (auto object : artboard->objects())
+    {
+        if (object != nullptr && object->is<T>())
+        {
+            results.push_back(static_cast<T*>(object));
+        }
+    }
+}
+
+std::vector<TextValueRunInfo> get_text_value_runs_from_artboard(rive::ArtboardInstance *artboard)
+{
+    std::vector<rive::TextValueRun*> text_value_runs;
+    std::vector<TextValueRunInfo> text_value_runs_info;
+
+    findAll<rive::TextValueRun>(text_value_runs, artboard);
+
+    for (auto text_value_run : text_value_runs)
+    {
+        if (!text_value_run->name().empty()) {
+            text_value_runs_info.push_back({text_value_run->name(), text_value_run->text()});
+        }
+    }
+    return text_value_runs_info;
+}
+
 std::optional<RiveFileData> process_riv_file(const std::string &rive_file_path)
 {
     // Check if the file is empty
@@ -317,8 +374,9 @@ std::optional<RiveFileData> process_riv_file(const std::string &rive_file_path)
 
         std::vector<std::string> animations = get_animations_from_artboard(artboard.get());
         std::vector<std::pair<std::string, std::vector<InputInfo>>> state_machines = get_state_machines_from_artboard(artboard.get());
+        std::vector<TextValueRunInfo> text_value_runs = get_text_value_runs_from_artboard(artboard.get());
 
-        file_data.artboards.push_back({artboard_name, artboard_pascal_case, artboard_camel_case, artboard_snake_case, artboard_kebab_case, animations, state_machines});
+        file_data.artboards.push_back({artboard_name, artboard_pascal_case, artboard_camel_case, artboard_snake_case, artboard_kebab_case, animations, state_machines, text_value_runs});
     }
 
     return file_data;
@@ -488,6 +546,25 @@ int main(int argc, char *argv[])
                 state_machines.push_back(state_machine_data);
             }
             artboard_data["state_machines"] = state_machines;
+
+            std::unordered_set<std::string> usedTextValueRunNames;
+            std::vector<kainjow::mustache::data> text_value_runs;
+            for (size_t tvr_index = 0; tvr_index < artboard.text_value_runs.size(); tvr_index++)
+            {
+                const auto &tvr = artboard.text_value_runs[tvr_index];
+                kainjow::mustache::data tvr_data;
+                auto unique_name = makeUnique(tvr.name, usedTextValueRunNames);
+                tvr_data["text_value_run_name"] = tvr.name;
+                tvr_data["text_value_run_camel_case"] = toCamelCase(unique_name);
+                tvr_data["text_value_run_pascal_case"] = toPascalCase(unique_name);
+                tvr_data["text_value_run_snake_case"] = toSnakeCase(unique_name);
+                tvr_data["text_value_run_kebab_case"] = toKebabCase(unique_name);
+                tvr_data["text_value_run_default"] = tvr.default_value;
+                tvr_data["text_value_run_default_sanitized"] = sanitizeString(tvr.default_value);
+                tvr_data["last"] = (tvr_index == artboard.text_value_runs.size() - 1);
+                text_value_runs.push_back(tvr_data);
+            }
+            artboard_data["text_value_runs"] = text_value_runs;
 
             artboard_list.push_back(artboard_data);
         }
