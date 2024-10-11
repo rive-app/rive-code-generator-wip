@@ -14,6 +14,20 @@ The tool uses [Mustache](https://mustache.github.io/) templating for flexible ou
 
 :warning: Note that this tool is still experimental and untested. Feedback and contributions are appreciated.
 
+## Cloning
+
+```sh
+git clone --recurse-submodules https://github.com/rive-app/rive-code-generator-wip
+```
+
+or
+
+```sh
+git clone https://github.com/rive-app/rive-code-generator-wip
+cd rive-code-generator-wip
+git submodule update --init --recursive
+```
+
 ## Build Instructions
 
 ### Prerequisites
