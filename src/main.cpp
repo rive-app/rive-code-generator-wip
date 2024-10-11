@@ -2,7 +2,7 @@
 #include <iostream>
 #include <fstream>
 #include <optional>
-#include "CLIUtils/CLI11.hpp"
+#include "CLIUTILS/CLI11.hpp"
 #include "kainjow/mustache.hpp"
 #include "rive/file.hpp"
 #include "rive/animation/linear_animation_instance.hpp"
