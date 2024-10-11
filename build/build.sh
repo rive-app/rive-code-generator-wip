@@ -31,6 +31,7 @@ echo "Using premake5 from $DEPENDENCIES/bin/premake5"
 export PREMAKE=$DEPENDENCIES/bin/premake5
 $PREMAKE --version
 
+export PREMAKE_PATH="$PWD/../rive-runtime/build":$PREMAKE_PATH
 
 OUT=out/lib/$CONFIG
 $PREMAKE --scripts=../build --file=./premake5_code_generator.lua --config=$CONFIG --out=$OUT gmake2
