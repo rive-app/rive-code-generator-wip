@@ -48,7 +48,8 @@ for var in "$@"; do
     if [[ $var = "dev" ]]; then
         # $OUT/rive_code_generator -i ../samples/signage_v03.riv -o out/rive_generated.dart -t ../templates/dart_template.mustache
         # $OUT/rive_code_generator -i ../samples/rating.riv -o out/rive_generated.dart -t ../templates/dart_template.mustache
-        $OUT/rive_code_generator -i ../samples/rating.riv -o out/rive_generated2.dart -t ../templates/dart_template.mustache
+        # $OUT/rive_code_generator -i ../samples/ -o out/generated/rive_generated.dart -t ../templates/dart_template.mustache
+        $OUT/rive_code_generator -i ../samples/ -o out/generated/rive.json -t ../templates/json_template.mustache
         # $OUT/rive_code_generator -i ../samples/nested_test.riv -o out/rive_generated.dart --help
         # $OUT/rive_code_generator -i ../samples/ -o out/rive_generated.dart
     fi

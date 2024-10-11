@@ -1,0 +1,27 @@
+{
+  "riveMeta": {
+    {{#riv_files}}
+    "{{riv_variable}}": {
+      "artboards": {
+        {{#artboards}}
+        "{{artboard_variable}}": {
+          "name": "{{artboard_name}}",
+          "animations": {
+            {{#animations}}
+            "{{animation_variable}}": "{{animation_name}}"{{^last}},{{/last}}
+            {{/animations}}
+          },
+          "stateMachines": {
+            {{#state_machines}}
+            "{{state_machine_variable}}": {
+              "name": "{{state_machine_name}}"
+            }{{^last}},{{/last}}
+            {{/state_machines}}
+          }
+        }{{^last}},{{/last}}
+        {{/artboards}}
+      }
+    }{{^last}},{{/last}}
+    {{/riv_files}}
+  }
+}

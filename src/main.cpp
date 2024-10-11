@@ -325,38 +325,46 @@ int main(int argc, char *argv[])
     kainjow::mustache::data template_data;
     std::vector<kainjow::mustache::data> riv_file_list;
 
-    for (const auto &file_data : rive_file_data_list)
+    for (size_t file_index = 0; file_index < rive_file_data_list.size(); file_index++)
     {
+        const auto &file_data = rive_file_data_list[file_index];
         kainjow::mustache::data riv_file_data;
         riv_file_data["riv_class"] = file_data.riv_class;
         riv_file_data["riv_variable"] = file_data.riv_variable;
+        riv_file_data["last"] = (file_index == rive_file_data_list.size() - 1);
 
         std::vector<kainjow::mustache::data> artboard_list;
-        for (const auto &artboard : file_data.artboards)
+        for (size_t artboard_index = 0; artboard_index < file_data.artboards.size(); artboard_index++)
         {
+            const auto &artboard = file_data.artboards[artboard_index];
             kainjow::mustache::data artboard_data;
             artboard_data["artboard_name"] = artboard.artboard_name;
             artboard_data["artboard_class_name"] = artboard.artboard_class_name;
             artboard_data["artboard_variable"] = artboard.artboard_variable;
+            artboard_data["last"] = (artboard_index == file_data.artboards.size() - 1);
 
             std::unordered_set<std::string> usedAnimationNames;
             std::vector<kainjow::mustache::data> animations;
-            for (const auto &animation : artboard.animations)
+            for (size_t anim_index = 0; anim_index < artboard.animations.size(); anim_index++)
             {
+                const auto &animation = artboard.animations[anim_index];
                 kainjow::mustache::data anim_data;
                 anim_data["animation_name"] = animation;
                 anim_data["animation_variable"] = makeUnique(toCamelCase(animation), usedAnimationNames);
+                anim_data["last"] = (anim_index == artboard.animations.size() - 1);
                 animations.push_back(anim_data);
             }
             artboard_data["animations"] = animations;
 
             std::unordered_set<std::string> usedStateMachineNames;
             std::vector<kainjow::mustache::data> state_machines;
-            for (const auto &state_machine : artboard.state_machines)
+            for (size_t sm_index = 0; sm_index < artboard.state_machines.size(); sm_index++)
             {
+                const auto &state_machine = artboard.state_machines[sm_index];
                 kainjow::mustache::data state_machine_data;
                 state_machine_data["state_machine_name"] = state_machine;
                 state_machine_data["state_machine_variable"] = makeUnique(toCamelCase(state_machine), usedStateMachineNames);
+                state_machine_data["last"] = (sm_index == artboard.state_machines.size() - 1);
                 state_machines.push_back(state_machine_data);
             }
             artboard_data["state_machines"] = state_machines;
@@ -399,7 +407,7 @@ int main(int argc, char *argv[])
     output_file << result;
     output_file.close();
 
-    std::cout << "Dart class generated successfully: " << output_path << std::endl;
+    std::cout << "File generated successfully: " << output_path << std::endl;
 
     return 0;
 }
