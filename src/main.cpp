@@ -25,6 +25,33 @@ enum class CaseStyle
     Kebab,
 };
 
+// Enum for different supported default languages
+enum class Language
+{
+    Dart,
+    JavaScript
+};
+
+struct ArtboardData
+{
+    std::string artboard_name;
+    std::string artboard_pascal_case;
+    std::string artboard_camel_case;
+    std::string artboard_snake_case;
+    std::string artboard_kebab_case;
+    std::vector<std::string> animations;
+    std::vector<std::string> state_machines;
+};
+
+struct RiveFileData
+{
+    std::string riv_pascal_case;
+    std::string riv_camel_case;
+    std::string riv_snake_case;
+    std::string riv_kebab_case;
+    std::vector<ArtboardData> artboards;
+};
+
 // Helper function to convert a string to the specified case style
 std::string toCaseHelper(const std::string &str, CaseStyle style)
 {
@@ -109,28 +136,6 @@ std::string toKebabCase(const std::string &str)
 {
     return toCaseHelper(str, CaseStyle::Kebab);
 }
-
-// Update the ArtboardData struct
-struct ArtboardData
-{
-    std::string artboard_name;
-    std::string artboard_pascal_case;
-    std::string artboard_camel_case;
-    std::string artboard_snake_case;
-    std::string artboard_kebab_case;
-    std::vector<std::string> animations;
-    std::vector<std::string> state_machines;
-};
-
-// Update the RiveFileData struct
-struct RiveFileData
-{
-    std::string riv_pascal_case;
-    std::string riv_camel_case;
-    std::string riv_snake_case;
-    std::string riv_kebab_case;
-    std::vector<ArtboardData> artboards;
-};
 
 static std::unique_ptr<rive::File> open_file(const char name[])
 {
@@ -278,13 +283,6 @@ std::optional<std::string> read_template_file(const std::string &path)
     }
     return std::string(std::istreambuf_iterator<char>(file), std::istreambuf_iterator<char>());
 }
-
-// Add this enum after the existing enums
-enum class Language
-{
-    Dart,
-    JavaScript
-};
 
 int main(int argc, char *argv[])
 {
