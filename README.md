@@ -58,6 +58,7 @@ Optionally, you can provide a custom template file to use for the generated code
 
 ```sh
 ./build/rive_code_generator -i ./rive_files/ -o ./output/rive.json -t templates/json_template.mustache
+```
 
 For examples of custom templates, please check the [`templates`](./templates) directory in this repository. You'll find sample templates for various output formats and languages.
 
