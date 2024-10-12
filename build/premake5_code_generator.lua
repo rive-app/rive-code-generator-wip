@@ -1,7 +1,8 @@
 rive = '../rive-runtime'
 
-dofile(path.join(path.getabsolute(rive) .. '/build', 'premake5.lua'))
-dofile(path.join(path.getabsolute(rive) .. '/build', 'rive_build_config.lua'))
+-- dofile(path.join(path.getabsolute(rive) .. '/build', 'premake5.lua'))
+-- dofile(path.join(path.getabsolute(rive) .. '/build', 'rive_build_config.lua'))
+dofile(path.join(path.getabsolute(rive) .. '/premake5_v2.lua'))
 
 project('rive_code_generator')
 do
@@ -26,7 +27,7 @@ do
     })
 
     -- buildoptions({ '-Wall', '-fno-exceptions', '-fno-rtti' })
-    buildoptions({ '-Wall', '-fexceptions' })
+    buildoptions({ '-Wall', '-fexceptions', '-fno-rtti' })
 
     -- filter({ 'system:macosx' })
     -- do
