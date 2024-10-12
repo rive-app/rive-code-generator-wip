@@ -4,5 +4,5 @@ on:
   workflow_dispatch:
 
 jobs:
-  build_rive_native:
-    uses: ./.github/workflows/build_rive_native.yaml
+  build_rive_code_generator:
+    uses: ./.github/workflows/build_rive_code_generator.yaml
