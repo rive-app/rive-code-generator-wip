@@ -1,0 +1,8 @@
+name: Manual Tester Workflow
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build_rive_native:
+    uses: ./.github/workflows/build_rive_native.yaml
