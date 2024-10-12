@@ -6,12 +6,15 @@ on:
 jobs:
   build:
     name: Build Rive Code Generator MacOS
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [macos-latest]
+    runs-on: macos-latest
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Checkout submodules
+        run: |
+          git submodule init
+          git submodule update --recursive      
       # - name: Configure venv
       #   run: |
       #     python3 -m venv .venv
@@ -19,15 +22,18 @@ jobs:
       #     echo PATH=$PATH >> $GITHUB_ENV
       # - name: install ply
       #   run: pip3 install ply
-      - name: Build
+      - name: Build for MacOS
         env:
           PAT_GITHUB: ${{ secrets.PAT_GITHUB }}
         working-directory: ./build
         run: ./build.sh release
-      - name: Test
+
+      - name: Test for MacOS
         working-directory: ./test
         run: ./test.sh
-      - uses: actions/upload-artifact@v4
+
+      - name: Upload artifact for macosx
+        uses: actions/upload-artifact@v4
         with:
           name: rive_code_generator_macosx
           path: ./build/out/lib/release/rive_code_generator
