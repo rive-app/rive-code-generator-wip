@@ -4,3 +4,6 @@ build/macosx
 
 # examples
 examples/generated/
+
+# test
+test/output/

@@ -1,0 +1,108 @@
+{
+  "riveMeta": {
+    "textRuns": {
+      "artboards": {
+        "artboardNr1": {
+          "name": "Artboard-Nr1",
+          "animations": {
+            "timeline1": "Timeline 1"
+          },
+          "textValueRuns": {
+            "name": "gordon",
+            "surname": "hayes",
+            "run1": "Text run 1",
+            "run2": "Text run 2\n"
+          },
+          "stateMachines": {
+            "stateMachine1": {
+              "name": "State Machine 1",
+              "inputs": {
+                
+              }
+            }
+          }
+        },
+        "artboardNr2": {
+          "name": "Artboard-Nr2",
+          "animations": {
+            "timeline1": "Timeline 1"
+          },
+          "textValueRuns": {
+            "arboard2Unique": "Artboard 2 unique value",
+            "name": "gordon",
+            "surname": "hayes",
+            "run1": "Text run 1",
+            "run2": "Text run 2\n"
+          },
+          "stateMachines": {
+            "stateMachine1": {
+              "name": "State Machine 1",
+              "inputs": {
+                
+              }
+            }
+          }
+        }
+      }
+    },
+    "rating": {
+      "artboards": {
+        "complete": {
+          "name": "Complete",
+          "animations": {
+            "thumbnail": "Thumbnail",
+            "n5Stars": "5_stars",
+            "n4Stars": "4_stars",
+            "n3Stars": "3_stars",
+            "n2Stars": "2_stars",
+            "n1Star": "1_star",
+            "idleEmpty": "Idle_empty"
+          },
+          "textValueRuns": {
+            
+          },
+          "stateMachines": {
+            "stateMachine1": {
+              "name": "State Machine 1",
+              "inputs": {
+                "rating": {
+                  "name": "Rating",
+                  "type": "number",
+                  "defaultValue": "0.000000"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "littleMachine": {
+      "artboards": {
+        "newArtboard": {
+          "name": "New Artboard",
+          "animations": {
+            "idleLight": "Idle light",
+            "idle": "Idle",
+            "work": "Work",
+            "insertData": "Insert_data"
+          },
+          "textValueRuns": {
+            
+          },
+          "stateMachines": {
+            "stateMachine1": {
+              "name": "State Machine 1",
+              "inputs": {
+                "trigger1": {
+                  "name": "Trigger 1",
+                  "type": "trigger",
+                  "defaultValue": "false"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

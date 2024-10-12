@@ -1,0 +1,11 @@
+Rive Code Generator
+Usage: ../build/out/lib/release/rive_code_generator [OPTIONS]
+
+Options:
+  -h,--help                   Print this help message and exit
+  -i,--input TEXT:(FILE) OR (DIR) REQUIRED
+                              Path to Rive file or directory containing Rive files
+  -o,--output TEXT REQUIRED   Output file path
+  -t,--template TEXT          Custom template file path
+  -l,--language ENUM:value in {dart->0,js->1} OR {0,1}
+                              Programming language for code generation
