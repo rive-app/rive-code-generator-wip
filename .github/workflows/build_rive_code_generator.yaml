@@ -4,9 +4,12 @@ on:
   workflow_call:
 
 jobs:
-  build_rive_code_generator_mac:
+  build:
     name: Build Rive Code Generator MacOS
-    runs-on: ghcr.io/cirruslabs/macos-runner:sonoma
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [macos-latest]
     steps:
       - uses: actions/checkout@v3
       # - name: Configure venv
