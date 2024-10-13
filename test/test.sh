@@ -23,7 +23,7 @@ RIVE_GENERATOR="../build/out/lib/release/rive_code_generator"
 UPDATE_EXPECTED=false
 #endregion
 
-# Add a function to parse command-line arguments
+#region Functions
 parse_args() {
     while [[ $# -gt 0 ]]; do
         case $1 in
@@ -82,12 +82,12 @@ run_test() {
     fi
     echo
 
-    # rm -rf "$output_file"
+    rm -rf "$output_file"
 
     return $test_result
 }
+#endregion
 
-# Parse command-line arguments
 parse_args "$@"
 
 #region Tests
