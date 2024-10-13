@@ -14,7 +14,7 @@
     <img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="Rive Code Generator is released under the MIT license." />
   </a>
   <a href="https://github.com/rive-app/rive-code-generator-wip/actions">
-    <img src="https://github.com/rive-app/rive-code-generator-wip/actions/workflows/build_rive_code_generator.yml/badge.svg" alt="Current GitHub Actions build status." />
+    <img src="https://github.com/rive-app/rive-code-generator-wip/actions/workflows/build_rive_code_generator.yaml/badge.svg" alt="Current GitHub Actions build status." />
   </a>
   <a href="https://github.com/rive-app/rive-code-generator-wip/releases">
     <img src="https://img.shields.io/github/v/release/rive-app/rive-code-generator-wip" alt="Latest GitHub release." />
