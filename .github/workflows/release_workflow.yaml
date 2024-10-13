@@ -1,0 +1,75 @@
+name: Create Release
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+      - 'v*.*.*-alpha.*'
+      - 'v*.*.*-beta.*'
+
+jobs:
+  build:
+    uses: ./.github/workflows/build_rive_code_generator.yaml
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Download artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: rive_code_generator_macosx
+
+      - name: Determine release type
+        id: release_type
+        run: |
+          if [[ ${{ github.ref }} == *"-alpha"* ]]; then
+            echo "TYPE=Alpha" >> $GITHUB_OUTPUT
+            echo "IS_PRERELEASE=true" >> $GITHUB_OUTPUT
+          elif [[ ${{ github.ref }} == *"-beta"* ]]; then
+            echo "TYPE=Beta" >> $GITHUB_OUTPUT
+            echo "IS_PRERELEASE=true" >> $GITHUB_OUTPUT
+          else
+            echo "TYPE=Release" >> $GITHUB_OUTPUT
+            echo "IS_PRERELEASE=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Generate Changelog
+        id: changelog
+        uses: github-changelog-generator/github-changelog-generator@v1.16.4
+        with:
+          usernames-as-github-logins: true
+          pull-requests: true
+          issues: true
+          issues-wo-labels: true
+          future-release: ${{ github.ref_name }}
+          output: CHANGELOG.md
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Commit Changelog
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add CHANGELOG.md
+          git commit -m "Update CHANGELOG.md for ${{ github.ref_name }}" || echo "No changes to commit"
+          git push
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          name: ${{ steps.release_type.outputs.TYPE }} ${{ github.ref_name }}
+          draft: false
+          prerelease: ${{ steps.release_type.outputs.IS_PRERELEASE }}
+          files: |
+            rive_code_generator_macosx
+            CHANGELOG.md
+          fail_on_unmatched_files: true
+          body_path: CHANGELOG.md
