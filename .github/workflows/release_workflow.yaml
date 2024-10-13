@@ -11,6 +11,10 @@ on:
         description: "Minor"
         type: boolean
         default: false
+      beta:
+        description: "Beta"
+        type: boolean
+        default: false
 
 jobs:
   build:
@@ -48,21 +52,21 @@ jobs:
 
       - name: Major Release
         if: ${{ inputs.major == true }}
-        run: npm run release -- major --ci --github.assets=rive_code_generator_macosx
+        run: npm run release -- major --ci --github.assets=rive_code_generator_macosx ${{ inputs.beta && '--preRelease=beta' || '' }}
         working-directory: ./.github/scripts/release
         env:
-          GITHUB_TOKEN: ${{ secrets.RIVE_REPO_PAT }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Minor Release
         if: ${{ inputs.major == false && inputs.minor == true }}
-        run: npm run release -- minor --ci --github.assets=rive_code_generator_macosx
+        run: npm run release -- minor --ci --github.assets=rive_code_generator_macosx ${{ inputs.beta && '--preRelease=beta' || '' }}
         working-directory: ./.github/scripts/release
         env:
-          GITHUB_TOKEN: ${{ secrets.RIVE_REPO_PAT }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Patch Release
         if: ${{ inputs.major == false && inputs.minor == false }}
-        run: npm run release -- --ci --github.assets=rive_code_generator_macosx
+        run: npm run release -- --ci --github.assets=rive_code_generator_macosx ${{ inputs.beta && '--preRelease=beta' || '' }}
         working-directory: ./.github/scripts/release
         env:
-          GITHUB_TOKEN: ${{ secrets.RIVE_REPO_PAT }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
