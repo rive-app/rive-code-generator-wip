@@ -11,6 +11,10 @@ on:
         description: "Minor"
         type: boolean
         default: false
+      patch:
+        description: "Patch"
+        type: boolean
+        default: false
       beta:
         description: "Beta"
         type: boolean
@@ -31,10 +35,27 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Validate inputs
+        run: |
+          if [[ "${{ inputs.major }}" == "true" && "${{ inputs.minor }}" == "true" ]] || \
+             [[ "${{ inputs.major }}" == "true" && "${{ inputs.patch }}" == "true" ]] || \
+             [[ "${{ inputs.minor }}" == "true" && "${{ inputs.patch }}" == "true" ]]; then
+            echo "Error: Only one of major, minor, or patch can be set to true."
+            exit 1
+          fi
+          
+          if [[ "${{ inputs.major }}" != "true" && \
+                "${{ inputs.minor }}" != "true" && \
+                "${{ inputs.patch }}" != "true" && \
+                "${{ inputs.beta }}" != "true" ]]; then
+            echo "Error: At least one of major, minor, patch, or beta must be set to true."
+            exit 1
+          fi
+
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '16'
+          node-version: '20'
 
       - name: Install dependencies
         run: npm ci
@@ -65,8 +86,15 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Patch Release
-        if: ${{ inputs.major == false && inputs.minor == false }}
+        if: ${{ inputs.major == false && inputs.minor == false && inputs.patch == true }}
         run: npm run release -- --ci --github.assets=rive_code_generator_macosx ${{ inputs.beta && '--preRelease=beta' || '' }}
+        working-directory: ./.github/scripts/release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Beta Release
+        if: ${{ inputs.major == false && inputs.minor == false && inputs.patch == false && inputs.beta == true }}
+        run: npm run release --ci --github.assets=rive_code_generator_macosx --preRelease=beta
         working-directory: ./.github/scripts/release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
