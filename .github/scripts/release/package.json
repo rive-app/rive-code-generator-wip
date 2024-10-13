@@ -1,6 +1,6 @@
 {
   "name": "rive-code-generator-release-stub",
-  "version": "0.0.3-beta.1",
+  "version": "0.0.3-beta.2",
   "description": "Release stub for Rive code generator",
   "scripts": {
     "release": "release-it"
