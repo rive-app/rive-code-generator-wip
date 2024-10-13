@@ -94,7 +94,7 @@ jobs:
 
       - name: Beta Release
         if: ${{ inputs.major == false && inputs.minor == false && inputs.patch == false && inputs.beta == true }}
-        run: npm run release --ci --github.assets=rive_code_generator_macosx --preRelease=beta
+        run: npm run release -- --preRelease --ci --github.assets=rive_code_generator_macosx
         working-directory: ./.github/scripts/release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
