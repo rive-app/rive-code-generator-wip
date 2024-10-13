@@ -6,3 +6,32 @@ on:
 jobs:
   build_rive_code_generator:
     uses: ./.github/workflows/build_rive_code_generator.yaml
+
+  verify_artifact:
+    needs: build_rive_code_generator
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: rive_code_generator_macosx
+          path: ./artifacts
+
+      - name: Verify artifact exists
+        run: |
+          if [ -f "./artifacts/rive_code_generator_macosx" ]; then
+            echo "Artifact exists"
+          else
+            echo "Artifact does not exist"
+            exit 1
+          fi
+
+      - name: Verify artifact in release scripts directory
+        working-directory: ./.github/scripts/release
+        run: |
+          if [ -f "../../../artifacts/rive_code_generator_macosx" ]; then
+            echo "Artifact exists in release scripts directory"
+          else
+            echo "Artifact does not exist in release scripts directory"
+            exit 1
+          fi
