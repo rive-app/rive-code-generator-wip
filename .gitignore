@@ -7,3 +7,6 @@ examples/generated/
 
 # test
 test/output/
+
+# ci
+.github/scripts/release/node_modules/

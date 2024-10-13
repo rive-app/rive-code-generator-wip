@@ -1,0 +1,15 @@
+{
+  "name": "rive-code-generator-release-stub",
+  "version": "0.0.0",
+  "description": "Release stub for Rive code generator",
+  "scripts": {
+    "release": "release-it"
+  },
+  "author": "support@rive.app",
+  "license": "MIT",
+  "devDependencies": {
+    "auto-changelog": "^2.5.0",
+    "release-it": "^17.8.2",
+    "@release-it/bumper": "^6.0.1"
+  }
+}

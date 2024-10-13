@@ -1,0 +1,38 @@
+{
+  "$schema": "https://unpkg.com/release-it/schema/release-it.json",
+  "git": {
+    "requireBranch": "main",
+    "commitMessage": "chore: release v${version}",
+    "tagName": "${version}",
+    "changelog": "npx auto-changelog --stdout --commit-limit false --unreleased --template https://raw.githubusercontent.com/release-it/release-it/master/templates/changelog-compact.hbs",
+    "requireCleanWorkingDir": true
+  },
+  "github": {
+    "release": true,
+    "releaseName": "${version}",
+    "releaseNotes": "npx auto-changelog --stdout --commit-limit false --unreleased --template https://raw.githubusercontent.com/release-it/release-it/master/templates/changelog-compact.hbs"
+  },
+  "npm": {
+    "publish": false,
+    "ignoreVersion": true
+  },
+  "plugins": {
+    "@release-it/bumper": {
+      "in": {
+        "file": "../../../VERSION",
+        "type": "text/plain"
+      },
+      "out": {
+        "file": "../../../VERSION",
+        "type": "text/plain"
+      }
+    }
+  },
+  "hooks": {
+    "after:bump": [
+      "auto-changelog -p -o ../../../CHANGELOG.md --hide-empty-releases",
+      "git add ../../../CHANGELOG.md",
+      "git add ../../../VERSION"
+    ]
+  }
+}

@@ -1,11 +1,16 @@
 name: Create Release
 
 on:
-  push:
-    tags:
-      - 'v*.*.*'
-      - 'v*.*.*-alpha.*'
-      - 'v*.*.*-beta.*'
+  workflow_dispatch:
+    inputs:
+      major:
+        description: "Major"
+        type: boolean
+        default: false
+      minor:
+        description: "Minor"
+        type: boolean
+        default: false
 
 jobs:
   build:
@@ -18,63 +23,46 @@ jobs:
       contents: write
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
-
-      - name: Download artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: rive_code_generator_macosx
-
-      - name: Determine release type
-        id: release_type
-        run: |
-          if [[ ${{ github.ref }} == *"-alpha"* ]]; then
-            echo "TYPE=Alpha" >> $GITHUB_OUTPUT
-            echo "IS_PRERELEASE=true" >> $GITHUB_OUTPUT
-          elif [[ ${{ github.ref }} == *"-beta"* ]]; then
-            echo "TYPE=Beta" >> $GITHUB_OUTPUT
-            echo "IS_PRERELEASE=true" >> $GITHUB_OUTPUT
-          else
-            echo "TYPE=Release" >> $GITHUB_OUTPUT
-            echo "IS_PRERELEASE=false" >> $GITHUB_OUTPUT
-          fi
 
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: '16'
 
-      - name: Install release-it
-        run: npm install --global release-it @release-it/conventional-changelog
+      - name: Install dependencies
+        run: npm ci
+        working-directory: ./.github/scripts/release
 
       - name: Configure Git
         run: |
-          git config user.name "${GITHUB_ACTOR}"
-          git config user.email "${GITHUB_ACTOR}@users.noreply.github.com"
+          git config --local user.email 'hello@rive.app'
+          git config --local user.name ${{ github.actor }}
 
-      - name: Generate Changelog
-        run: |
-          npx release-it --ci --dry-run --no-git.requireCleanWorkingDir --changelog
+      - name: Download artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: rive_code_generator_macosx
 
-      - name: Commit Changelog
-        run: |
-          git add CHANGELOG.md
-          git commit -m "Update CHANGELOG.md for ${{ github.ref_name }}"
-          git push origin HEAD:${{ github.ref }}
-
-      - name: Run release-it
+      - name: Major Release
+        if: ${{ inputs.major == true }}
+        run: npm run release -- major --ci --github.assets=rive_code_generator_macosx
+        working-directory: ./.github/scripts/release
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          release-it --ci \
-            --github.release \
-            --github.assets rive_code_generator_macosx \
-            --no-git.requireCleanWorkingDir \
-            --no-git.push \
-            --no-npm.publish \
-            --github.releaseName="${{ steps.release_type.outputs.TYPE }} ${GITHUB_REF#refs/tags/}" \
-            --github.preRelease=${{ steps.release_type.outputs.IS_PRERELEASE }} \
-            --plugins.@release-it/conventional-changelog \
-            --no-increment
+          GITHUB_TOKEN: ${{ secrets.RIVE_REPO_PAT }}
+
+      - name: Minor Release
+        if: ${{ inputs.major == false && inputs.minor == true }}
+        run: npm run release -- minor --ci --github.assets=rive_code_generator_macosx
+        working-directory: ./.github/scripts/release
+        env:
+          GITHUB_TOKEN: ${{ secrets.RIVE_REPO_PAT }}
+
+      - name: Patch Release
+        if: ${{ inputs.major == false && inputs.minor == false }}
+        run: npm run release -- --ci --github.assets=rive_code_generator_macosx
+        working-directory: ./.github/scripts/release
+        env:
+          GITHUB_TOKEN: ${{ secrets.RIVE_REPO_PAT }}
