@@ -72,6 +72,9 @@ jobs:
           name: rive_code_generator_macosx
           path: ./artifacts
 
+      - name: Rename downloaded file
+        run: mv ./artifacts/rive_code_generator ./artifacts/rive_code_generator_macosx
+
       - name: Major Release
         if: ${{ inputs.major == true }}
         run: npm run release -- major --ci --github.assets=../../../artifacts/rive_code_generator_macosx ${{ inputs.beta && '--preRelease=beta' || '' }}
