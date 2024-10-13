@@ -14,7 +14,7 @@
     <img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="Rive Code Generator is released under the MIT license." />
   </a>
   <a href="https://github.com/rive-app/rive-code-generator-wip/actions">
-    <img src="https://github.com/rive-app/rive-code-generator-wip/workflows/build_rive_code_generator.yaml/badge.svg" alt="Current GitHub Actions build status." />
+    <img src="https://github.com/rive-app/rive-code-generator-wip/actions/workflows/build_rive_code_generator.yml/badge.svg" alt="Current GitHub Actions build status." />
   </a>
   <a href="https://github.com/rive-app/rive-code-generator-wip/releases">
     <img src="https://img.shields.io/github/v/release/rive-app/rive-code-generator-wip" alt="Latest GitHub release." />
@@ -25,7 +25,7 @@
 </p>
 
 <h3 align="center">
-  <a href="#build-instructions">Build Instructions</a>
+  <a href="#releases">Releases</a>
   <span> · </span>
   <a href="#usage">Usage</a>
   <span> · </span>
@@ -36,10 +36,9 @@
   <a href="#license">License</a>
 </h3>
 
-This tool parses Rive (`.riv`) files and extracts component names, artboards, state machine inputs, and other elements in a human-readable format. Key features include:
+This tool parses Rive (`.riv`) files and extracts component names, artboards, state machine inputs, and other components in a human-readable format. Key features include:
 
 - Creating type-safe wrappers for `.riv` files (e.g., static helper classes)
-- Providing type-safe access to artboards, animations, and state machines
 - Generating JSON representations of `.riv` files
 - Diffing `.riv` files for version control purposes
 - Generating complete code components
@@ -133,7 +132,7 @@ This ensures that all generated code and references remain unique and valid.
 
 At the moment, the tool supports Dart and JSON outputs. More defualt exports will be added. However, you can easily add your own by providing a custom template.
 
-## Contributing
+## Contribute
 
 Contributions are welcome! Please see our [Contributing Guidelines](CONTRIBUTING.md) for more details.
 
