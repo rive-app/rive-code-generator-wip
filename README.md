@@ -1,6 +1,40 @@
-# Rive Code Generator
+<h1 align="center">
+  <a href="https://github.com/rive-app/rive-code-generator-wip">
+    Rive Code Generator
+  </a>
+</h1>
 
-A command-line tool to simplify the integration of Rive graphics at runtime.
+<p align="center">
+  <strong>Simplify Rive integration at runtime:</strong><br>
+  Generate type-safe wrappers for Rive files.
+</p>
+
+<p align="center">
+  <a href="https://github.com/rive-app/rive-code-generator-wip/blob/main/LICENSE">
+    <img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="Rive Code Generator is released under the MIT license." />
+  </a>
+  <a href="https://github.com/rive-app/rive-code-generator-wip/actions">
+    <img src="https://github.com/rive-app/rive-code-generator-wip/workflows/build_rive_code_generator.yaml/badge.svg" alt="Current GitHub Actions build status." />
+  </a>
+  <a href="https://github.com/rive-app/rive-code-generator-wip/releases">
+    <img src="https://img.shields.io/github/v/release/rive-app/rive-code-generator-wip" alt="Latest GitHub release." />
+  </a>
+  <a href="https://github.com/rive-app/rive-code-generator-wip/blob/main/CONTRIBUTING.md">
+    <img src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg" alt="PRs welcome!" />
+  </a>
+</p>
+
+<h3 align="center">
+  <a href="#build-instructions">Build Instructions</a>
+  <span> · </span>
+  <a href="#usage">Usage</a>
+  <span> · </span>
+  <a href="#custom-templates">Custom Templates</a>
+  <span> · </span>
+  <a href="#contributing">Contribute</a>
+  <span> · </span>
+  <a href="#license">License</a>
+</h3>
 
 This tool parses Rive (`.riv`) files and extracts component names, artboards, state machine inputs, and other elements in a human-readable format. Key features include:
 
@@ -14,41 +48,11 @@ The tool uses [Mustache](https://mustache.github.io/) templating for flexible ou
 
 :warning: Note that this tool is still experimental and untested. Feedback and contributions are appreciated.
 
-## Cloning
+## Releases
 
-```sh
-git clone --recurse-submodules https://github.com/rive-app/rive-code-generator-wip
-```
+See the [release workflow](.github/workflows/release_workflow.yaml) for release details.
 
-or
-
-```sh
-git clone https://github.com/rive-app/rive-code-generator-wip
-cd rive-code-generator-wip
-git submodule update --init --recursive
-```
-
-## Build Instructions
-
-### Prerequisites
-
-- CMake (version 3.10 or higher)
-- C++ compiler with C++17 support
-- Rive C++ Runtime library
-
-### Building
-
-To build the debug version:
-```sh
-cd build && ./build.sh
-```
-
-For the release version:
-```sh
-cd build && ./build.sh release
-```
-
-The executable will be created in `build/out/lib/debug` or `build/out/lib/release`.
+The latest release can be downloaded from the [Releases](https://github.com/rive-app/rive-code-generator-wip/releases) page.
 
 ## Usage
 
