@@ -41,35 +41,40 @@ jobs:
             echo "IS_PRERELEASE=false" >> $GITHUB_OUTPUT
           fi
 
-      - name: Generate Changelog
-        id: changelog
-        uses: github-changelog-generator/github-changelog-generator@v1.16.4
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
         with:
-          usernames-as-github-logins: true
-          pull-requests: true
-          issues: true
-          issues-wo-labels: true
-          future-release: ${{ github.ref_name }}
-          output: CHANGELOG.md
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          node-version: '16'
+
+      - name: Install release-it
+        run: npm install --global release-it @release-it/conventional-changelog
+
+      - name: Configure Git
+        run: |
+          git config user.name "${GITHUB_ACTOR}"
+          git config user.email "${GITHUB_ACTOR}@users.noreply.github.com"
+
+      - name: Generate Changelog
+        run: |
+          npx release-it --ci --dry-run --no-git.requireCleanWorkingDir --changelog
 
       - name: Commit Changelog
         run: |
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
           git add CHANGELOG.md
-          git commit -m "Update CHANGELOG.md for ${{ github.ref_name }}" || echo "No changes to commit"
-          git push
+          git commit -m "Update CHANGELOG.md for ${{ github.ref_name }}"
+          git push origin HEAD:${{ github.ref }}
 
-      - name: Create Release
-        uses: softprops/action-gh-release@v1
-        with:
-          name: ${{ steps.release_type.outputs.TYPE }} ${{ github.ref_name }}
-          draft: false
-          prerelease: ${{ steps.release_type.outputs.IS_PRERELEASE }}
-          files: |
-            rive_code_generator_macosx
-            CHANGELOG.md
-          fail_on_unmatched_files: true
-          body_path: CHANGELOG.md
+      - name: Run release-it
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          release-it --ci \
+            --github.release \
+            --github.assets rive_code_generator_macosx \
+            --no-git.requireCleanWorkingDir \
+            --no-git.push \
+            --no-npm.publish \
+            --github.releaseName="${{ steps.release_type.outputs.TYPE }} ${GITHUB_REF#refs/tags/}" \
+            --github.preRelease=${{ steps.release_type.outputs.IS_PRERELEASE }} \
+            --plugins.@release-it/conventional-changelog \
+            --no-increment
