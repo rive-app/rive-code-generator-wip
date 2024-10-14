@@ -132,6 +132,9 @@ For each Rive file `{{#riv_files}}`, the following variables are available:
         - `{{text_value_run_kebab_case}}`: Name of the text value run in kebab-case
         - `{{text_value_run_default}}`: Default value of the text value run
         - `{{text_value_run_default_sanitized}}`: Default value of the text value run with special characters encoded
+    - For each nested text value run `{{#nested_text_value_runs}}`:
+        - `{{nested_text_value_run_name}}`: Name of the nested text value run
+        - `{{nested_text_value_run_path}}`: Path of the nested text value run
 
 **:warning: Warning:** For duplicated names (e.g., multiple artboards, animations, or assets with the same name), the original unique names will be preserved. However, the case-converted versions (such as camelCase, PascalCase, etc.) will have a unique identifier attached to avoid conflicts.
 

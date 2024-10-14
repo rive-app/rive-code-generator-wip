@@ -27,6 +27,14 @@
             "{{text_value_run_camel_case}}": "{{text_value_run_default_sanitized}}"{{^last}},{{/last}}
             {{/text_value_runs}}
           },
+          "nestedTextValueRuns": [
+            {{#nested_text_value_runs}}
+            {
+              "name": "{{nested_text_value_run_name}}",
+              "path": "{{nested_text_value_run_path}}"
+            }{{^last}},{{/last}}
+            {{/nested_text_value_runs}}
+          ],
           "stateMachines": {
             {{#state_machines}}
             "{{state_machine_camel_case}}": {

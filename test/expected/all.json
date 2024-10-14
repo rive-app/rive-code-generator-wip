@@ -22,6 +22,9 @@
             "run1": "Text run 1",
             "run2": "Text run 2\n"
           },
+          "nestedTextValueRuns": [
+            
+          ],
           "stateMachines": {
             "stateMachine1": {
               "name": "State Machine 1",
@@ -43,6 +46,112 @@
             "run1": "Text run 1",
             "run2": "Text run 2\n"
           },
+          "nestedTextValueRuns": [
+            
+          ],
+          "stateMachines": {
+            "stateMachine1": {
+              "name": "State Machine 1",
+              "inputs": {
+                
+              }
+            }
+          }
+        }
+      }
+    },
+    "nestedText": {
+      "assets": {
+        "inter": {
+          "name": "Inter",
+          "type": "font",
+          "assetId": "594377",
+          "cdnUuid": "",
+          "cdnBaseUrl": "https://public.rive.app/cdn/uuid"
+        }
+      },
+      "artboards": {
+        "artboard1": {
+          "name": "Artboard1",
+          "animations": {
+            "timeline1": "Timeline 1"
+          },
+          "textValueRuns": {
+            "artboard1Textrun": "Text on artboard 1"
+          },
+          "nestedTextValueRuns": [
+            {
+              "name": "Artboard2-TextRun",
+              "path": "NestedArtboard2"
+            },
+            {
+              "name": "Artboard3-TextRun",
+              "path": "NestedArtboard2/NestedArtboard3"
+            }
+          ],
+          "stateMachines": {
+            "stateMachine1": {
+              "name": "State Machine 1",
+              "inputs": {
+                
+              }
+            }
+          }
+        },
+        "artboarddonotfind": {
+          "name": "ArtboardDoNotFind",
+          "animations": {
+            "timeline1": "Timeline 1"
+          },
+          "textValueRuns": {
+            
+          },
+          "nestedTextValueRuns": [
+            
+          ],
+          "stateMachines": {
+            "stateMachine1": {
+              "name": "State Machine 1",
+              "inputs": {
+                
+              }
+            }
+          }
+        },
+        "artboard3": {
+          "name": "Artboard3",
+          "animations": {
+            "timeline1": "Timeline 1"
+          },
+          "textValueRuns": {
+            "artboard3Textrun": "Text on artboard 3"
+          },
+          "nestedTextValueRuns": [
+            
+          ],
+          "stateMachines": {
+            "stateMachine1": {
+              "name": "State Machine 1",
+              "inputs": {
+                
+              }
+            }
+          }
+        },
+        "artboard2": {
+          "name": "Artboard2",
+          "animations": {
+            "timeline1": "Timeline 1"
+          },
+          "textValueRuns": {
+            "artboard2Textrun": "Text on artboard 2"
+          },
+          "nestedTextValueRuns": [
+            {
+              "name": "Artboard3-TextRun",
+              "path": "NestedArtboard3"
+            }
+          ],
           "stateMachines": {
             "stateMachine1": {
               "name": "State Machine 1",
@@ -73,6 +182,9 @@
           "textValueRuns": {
             
           },
+          "nestedTextValueRuns": [
+            
+          ],
           "stateMachines": {
             "stateMachine1": {
               "name": "State Machine 1",
@@ -114,6 +226,9 @@
           "textValueRuns": {
             
           },
+          "nestedTextValueRuns": [
+            
+          ],
           "stateMachines": {
             "stateMachine1": {
               "name": "State Machine 1",
@@ -141,6 +256,9 @@
           "textValueRuns": {
             
           },
+          "nestedTextValueRuns": [
+            
+          ],
           "stateMachines": {
             "stateMachine1": {
               "name": "State Machine 1",

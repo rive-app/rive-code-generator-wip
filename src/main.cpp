@@ -48,6 +48,11 @@ struct TextValueRunInfo {
     std::string default_value;
 };
 
+struct NestedTextValueRunInfo {
+    std::string name;
+    std::string path;
+};
+
 struct AssetInfo {
     std::string name;
     std::string type;
@@ -67,6 +72,7 @@ struct ArtboardData
     std::vector<std::string> animations;
     std::vector<std::pair<std::string, std::vector<InputInfo>>> state_machines;
     std::vector<TextValueRunInfo> text_value_runs;
+    std::vector<NestedTextValueRunInfo> nested_text_value_runs;
 };
 
 struct RiveFileData
@@ -342,6 +348,36 @@ std::vector<TextValueRunInfo> get_text_value_runs_from_artboard(rive::ArtboardIn
     return text_value_runs_info;
 }
 
+std::vector<NestedTextValueRunInfo> get_nested_text_value_run_paths_from_artboard(rive::ArtboardInstance *artboard, const std::string& current_path = "")
+{
+    std::vector<NestedTextValueRunInfo> nested_text_value_runs_info;
+    auto count = artboard->nestedArtboards().size();
+
+
+    if (!current_path.empty()) {
+        auto text_runs = get_text_value_runs_from_artboard(artboard);
+        for (const auto& text_run : text_runs) {
+            nested_text_value_runs_info.push_back({text_run.name, current_path});
+        }
+    }
+
+    // Recursively process nested artboards
+    for (int i = 0; i < count; i++) {
+        auto nested = artboard->nestedArtboards()[i];
+        auto nested_name = nested->name();
+        if (!nested_name.empty()) 
+        {
+            // Only process nested artboards that have an exported name
+            std::string new_path = current_path.empty() ? nested->name() : current_path + "/" + nested->name();
+            
+            auto nested_results = get_nested_text_value_run_paths_from_artboard(nested->artboardInstance(), new_path);
+            nested_text_value_runs_info.insert(nested_text_value_runs_info.end(), nested_results.begin(), nested_results.end());
+        }
+    }
+
+    return nested_text_value_runs_info;
+}
+
 std::vector<AssetInfo> get_assets_from_file(rive::File *file)
 {
     std::vector<AssetInfo> assetsInfo;
@@ -426,8 +462,9 @@ std::optional<RiveFileData> process_riv_file(const std::string &rive_file_path)
         std::vector<std::string> animations = get_animations_from_artboard(artboard.get());
         std::vector<std::pair<std::string, std::vector<InputInfo>>> state_machines = get_state_machines_from_artboard(artboard.get());
         std::vector<TextValueRunInfo> text_value_runs = get_text_value_runs_from_artboard(artboard.get());
+        std::vector<NestedTextValueRunInfo> nested_text_value_runs = get_nested_text_value_run_paths_from_artboard(artboard.get());
 
-        file_data.artboards.push_back({artboard_name, artboard_pascal_case, artboard_camel_case, artboard_snake_case, artboard_kebab_case, animations, state_machines, text_value_runs});
+        file_data.artboards.push_back({artboard_name, artboard_pascal_case, artboard_camel_case, artboard_snake_case, artboard_kebab_case, animations, state_machines, text_value_runs, nested_text_value_runs});
     }
 
     return file_data;
@@ -635,6 +672,19 @@ int main(int argc, char *argv[])
                 text_value_runs.push_back(tvr_data);
             }
             artboard_data["text_value_runs"] = text_value_runs;
+
+            std::vector<kainjow::mustache::data> nested_text_value_runs;
+            for (size_t ntvr_index = 0; ntvr_index < artboard.nested_text_value_runs.size(); ntvr_index++)
+            {
+                const auto &ntvr = artboard.nested_text_value_runs[ntvr_index];
+                kainjow::mustache::data ntvr_data;
+                ntvr_data["nested_text_value_run_name"] = ntvr.name;
+                ntvr_data["nested_text_value_run_path"] = ntvr.path;
+                ntvr_data["last"] = (ntvr_index == artboard.nested_text_value_runs.size() - 1);
+                nested_text_value_runs.push_back(ntvr_data);
+            }
+
+            artboard_data["nested_text_value_runs"] = nested_text_value_runs;
 
             artboard_list.push_back(artboard_data);
         }
