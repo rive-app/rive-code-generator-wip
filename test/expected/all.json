@@ -1,6 +1,15 @@
 {
   "riveMeta": {
     "textRuns": {
+      "assets": {
+        "inter": {
+          "name": "Inter",
+          "type": "font",
+          "assetId": "594377",
+          "cdnUuid": "",
+          "cdnBaseUrl": "https://public.rive.app/cdn/uuid"
+        }
+      },
       "artboards": {
         "artboardNr1": {
           "name": "Artboard-Nr1",
@@ -46,6 +55,9 @@
       }
     },
     "rating": {
+      "assets": {
+        
+      },
       "artboards": {
         "complete": {
           "name": "Complete",
@@ -76,7 +88,47 @@
         }
       }
     },
+    "fileAssets": {
+      "assets": {
+        "inter": {
+          "name": "Inter",
+          "type": "font",
+          "assetId": "594377",
+          "cdnUuid": "",
+          "cdnBaseUrl": "https://public.rive.app/cdn/uuid"
+        },
+        "customImage": {
+          "name": "custom_image",
+          "type": "image",
+          "assetId": "2472778",
+          "cdnUuid": "",
+          "cdnBaseUrl": "https://public.rive.app/cdn/uuid"
+        }
+      },
+      "artboards": {
+        "artboard": {
+          "name": "Artboard",
+          "animations": {
+            "timeline1": "Timeline 1"
+          },
+          "textValueRuns": {
+            
+          },
+          "stateMachines": {
+            "stateMachine1": {
+              "name": "State Machine 1",
+              "inputs": {
+                
+              }
+            }
+          }
+        }
+      }
+    },
     "littleMachine": {
+      "assets": {
+        
+      },
       "artboards": {
         "newArtboard": {
           "name": "New Artboard",

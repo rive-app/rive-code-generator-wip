@@ -8,6 +8,9 @@
 #include "rive/animation/linear_animation_instance.hpp"
 #include "rive/animation/state_machine_instance.hpp"
 #include "rive/animation/state_machine_input_instance.hpp"
+#include "rive/assets/image_asset.hpp"
+#include "rive/assets/font_asset.hpp"
+#include "rive/assets/audio_asset.hpp"
 #include "rive/generated/animation/state_machine_bool_base.hpp"
 #include "rive/generated/animation/state_machine_number_base.hpp"
 #include "rive/generated/animation/state_machine_trigger_base.hpp"
@@ -20,7 +23,6 @@
 
 const std::string generated_file_name = "rive_generated";
 
-// Enum for different case styles
 enum class CaseStyle
 {
     Camel,
@@ -29,14 +31,12 @@ enum class CaseStyle
     Kebab,
 };
 
-// Enum for different supported default languages
 enum class Language
 {
     Dart,
     JavaScript
 };
 
-// Define the custom struct for input information
 struct InputInfo {
     std::string name;
     std::string type;
@@ -46,6 +46,15 @@ struct InputInfo {
 struct TextValueRunInfo {
     std::string name;
     std::string default_value;
+};
+
+struct AssetInfo {
+    std::string name;
+    std::string type;
+    std::string file_extension;
+    std::string asset_id;
+    std::string cdn_uuid;
+    std::string cdn_base_url;
 };
 
 struct ArtboardData
@@ -67,6 +76,7 @@ struct RiveFileData
     std::string riv_snake_case;
     std::string riv_kebab_case;
     std::vector<ArtboardData> artboards;
+    std::vector<AssetInfo> assets;
 };
 
 // Helper function to convert a string to the specified case style
@@ -332,6 +342,45 @@ std::vector<TextValueRunInfo> get_text_value_runs_from_artboard(rive::ArtboardIn
     return text_value_runs_info;
 }
 
+std::vector<AssetInfo> get_assets_from_file(rive::File *file)
+{
+    std::vector<AssetInfo> assetsInfo;
+    std::unordered_set<std::string> usedAssetNames;
+
+    auto assets = file->assets();
+    for (auto asset : assets)
+    {
+        std::string assetType;
+        switch (asset->coreType()) {
+            case rive::ImageAsset::typeKey:
+                assetType = "image";
+                break;
+            case rive::FontAsset::typeKey:
+                assetType = "font";
+                break;
+            case rive::AudioAsset::typeKey:
+                assetType = "audio";
+                break;
+            default:
+                assetType = "unknown";
+                break;
+        }
+
+        auto assetName = asset->name();
+        auto uniqueAssetName = makeUnique(assetName, usedAssetNames);
+
+        assetsInfo.push_back(AssetInfo{
+            uniqueAssetName,
+            assetType,
+            asset->fileExtension(),
+            std::to_string(asset->assetId()),
+            asset->cdnUuidStr(),
+            asset->cdnBaseUrl()
+        });
+    }
+    return assetsInfo;
+}
+
 std::optional<RiveFileData> process_riv_file(const std::string &rive_file_path)
 {
     // Check if the file is empty
@@ -350,11 +399,13 @@ std::optional<RiveFileData> process_riv_file(const std::string &rive_file_path)
 
     std::filesystem::path path(rive_file_path);
     std::string file_name_without_extension = path.stem().string();
+    std::vector<AssetInfo> assets = get_assets_from_file(riveFile.get());
     RiveFileData file_data;
     file_data.riv_pascal_case = toPascalCase(file_name_without_extension);
     file_data.riv_camel_case = toCamelCase(file_name_without_extension);
     file_data.riv_snake_case = toSnakeCase(file_name_without_extension);
     file_data.riv_kebab_case = toKebabCase(file_name_without_extension);
+    file_data.assets = assets;
 
     std::unordered_set<std::string> usedArtboardNames;
 
@@ -481,6 +532,25 @@ int main(int argc, char *argv[])
         riv_file_data["riv_kebab_case"] = file_data.riv_kebab_case;
         riv_file_data["last"] = (file_index == rive_file_data_list.size() - 1);
 
+        std::vector<kainjow::mustache::data> assets;
+        for (size_t asset_index = 0; asset_index < file_data.assets.size(); asset_index++)
+        {
+            const auto &asset = file_data.assets[asset_index];
+            kainjow::mustache::data asset_data;
+            asset_data["asset_name"] = asset.name;
+            asset_data["asset_camel_case"] = toCamelCase(asset.name);
+            asset_data["asset_pascal_case"] = toPascalCase(asset.name);
+            asset_data["asset_snake_case"] = toSnakeCase(asset.name);
+            asset_data["asset_kebab_case"] = toKebabCase(asset.name);
+            asset_data["asset_type"] = asset.type;
+            asset_data["asset_id"] = asset.asset_id;
+            asset_data["asset_cdn_uuid"] = asset.cdn_uuid;
+            asset_data["asset_cdn_base_url"] = asset.cdn_base_url;
+            asset_data["last"] = (asset_index == file_data.assets.size() - 1);
+            assets.push_back(asset_data);
+        }
+        riv_file_data["assets"] = assets;
+
         std::vector<kainjow::mustache::data> artboard_list;
         for (size_t artboard_index = 0; artboard_index < file_data.artboards.size(); artboard_index++)
         {
@@ -576,11 +646,9 @@ int main(int argc, char *argv[])
     template_data["generated_file_name"] = generated_file_name;
     template_data["riv_files"] = riv_file_list;
 
-    // Use template_str for rendering
     kainjow::mustache::mustache tmpl(template_str);
     std::string result = tmpl.render(template_data);
 
-    // Debug print the output file path
     std::cout << "Rive: output_file_path = " << output_file_path << std::endl;
 
     std::filesystem::path output_path(output_file_path);
@@ -594,7 +662,6 @@ int main(int argc, char *argv[])
     // Create directories if they don't exist (this won't do anything if it's just a filename)
     std::filesystem::create_directories(output_path.parent_path());
 
-    // Open the output file
     std::ofstream output_file(output_path);
     if (!output_file.is_open())
     {

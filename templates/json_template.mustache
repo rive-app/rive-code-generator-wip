@@ -2,6 +2,17 @@
   "riveMeta": {
     {{#riv_files}}
     "{{riv_camel_case}}": {
+      "assets": {
+        {{#assets}}
+        "{{asset_camel_case}}": {
+          "name": "{{asset_name}}",
+          "type": "{{asset_type}}",
+          "assetId": "{{asset_id}}",
+          "cdnUuid": "{{asset_cdn_uuid}}",
+          "cdnBaseUrl": "{{asset_cdn_base_url}}"
+        }{{^last}},{{/last}}
+        {{/assets}}
+      },
       "artboards": {
         {{#artboards}}
         "{{artboard_camel_case}}": {

@@ -85,6 +85,19 @@ For each Rive file `{{#riv_files}}`, the following variables are available:
 - `{{riv_camel_case}}`: The Rive file name in camelCase
 - `{{riv_snake_case}}`: The Rive file name in snake_case
 - `{{riv_kebab_case}}`: The Rive file name in kebab-case
+
+- `{{assets}}`: List of assets in the Rive file
+- For each asset `{{#assets}}`:
+    - `{{asset_name}}`: Name of the asset
+    - `{{asset_camel_case}}`: Name of the asset in camelCase
+    - `{{asset_pascal_case}}`: Name of the asset in PascalCase
+    - `{{asset_snake_case}}`: Name of the asset in snake_case
+    - `{{asset_kebab_case}}`: Name of the asset in kebab-case
+    - `{{asset_type}}`: Type of the asset
+    - `{{asset_id}}`: ID of the asset
+    - `{{asset_cdn_uuid}}`: CDN UUID of the asset
+    - `{{asset_cdn_base_url}}`: CDN base URL of the asset
+
 - For each artboard `{{#artboards}}`:
     - `{{artboard_name}}`: The original artboard name
     - `{{artboard_pascal_case}}`: The artboard name in PascalCase
@@ -120,7 +133,7 @@ For each Rive file `{{#riv_files}}`, the following variables are available:
         - `{{text_value_run_default}}`: Default value of the text value run
         - `{{text_value_run_default_sanitized}}`: Default value of the text value run with special characters encoded
 
-**:warning: Warning:** For duplicated names (e.g., multiple artboards or animations with the same name), the original unique names will be preserved. However, the case-converted versions (such as camelCase, PascalCase, etc.) will have a unique identifier attached to avoid conflicts.
+**:warning: Warning:** For duplicated names (e.g., multiple artboards, animations, or assets with the same name), the original unique names will be preserved. However, the case-converted versions (such as camelCase, PascalCase, etc.) will have a unique identifier attached to avoid conflicts.
 
 For example:
 - Original names: "MyArtboard", "MyArtboard"
