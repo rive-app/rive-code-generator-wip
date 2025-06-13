@@ -62,6 +62,7 @@ Run the code generator using:
 ```
 
 Example:
+
 ```sh
 ./build/out/lib/release/rive_code_generator -i ./examples/rive_files/animation.riv -o ./examples/generated_code.dart -l dart
 ```
@@ -81,6 +82,7 @@ Sample templates are available in the [`templates`](./templates) directory.
 The tool uses [Mustache](https://mustache.github.io/) templating. Please refer to the [Mustache documentation](https://mustache.github.io/) for syntax details.
 
 For each Rive file `{{#riv_files}}`, the following variables are available:
+
 - `{{riv_pascal_case}}`: The Rive file name in PascalCase
 - `{{riv_camel_case}}`: The Rive file name in camelCase
 - `{{riv_snake_case}}`: The Rive file name in snake_case
@@ -88,57 +90,108 @@ For each Rive file `{{#riv_files}}`, the following variables are available:
 
 - `{{assets}}`: List of assets in the Rive file
 - For each asset `{{#assets}}`:
-    - `{{asset_name}}`: Name of the asset
-    - `{{asset_camel_case}}`: Name of the asset in camelCase
-    - `{{asset_pascal_case}}`: Name of the asset in PascalCase
-    - `{{asset_snake_case}}`: Name of the asset in snake_case
-    - `{{asset_kebab_case}}`: Name of the asset in kebab-case
-    - `{{asset_type}}`: Type of the asset
-    - `{{asset_id}}`: ID of the asset
-    - `{{asset_cdn_uuid}}`: CDN UUID of the asset
-    - `{{asset_cdn_base_url}}`: CDN base URL of the asset
+
+  - `{{asset_name}}`: Name of the asset
+  - `{{asset_camel_case}}`: Name of the asset in camelCase
+  - `{{asset_pascal_case}}`: Name of the asset in PascalCase
+  - `{{asset_snake_case}}`: Name of the asset in snake_case
+  - `{{asset_kebab_case}}`: Name of the asset in kebab-case
+  - `{{asset_type}}`: Type of the asset
+  - `{{asset_id}}`: ID of the asset
+  - `{{asset_cdn_uuid}}`: CDN UUID of the asset
+  - `{{asset_cdn_base_url}}`: CDN base URL of the asset
 
 - For each artboard `{{#artboards}}`:
-    - `{{artboard_name}}`: The original artboard name
-    - `{{artboard_pascal_case}}`: The artboard name in PascalCase
-    - `{{artboard_camel_case}}`: The artboard name in camelCase
-    - `{{artboard_snake_case}}`: The artboard name in snake_case
-    - `{{artboard_kebab_case}}`: The artboard name in kebab-case
-    - `{{animations}}`: List of animation names for the artboard
-    - For each animation `{{#animations}}`:
-        - `{{animation_name}}`: Name of the animation
-        - `{{animation_camel_case}}`: Name of the animation in camelCase
-        - `{{animation_pascal_case}}`: Name of the animation in PascalCase
-        - `{{animation_snake_case}}`: Name of the animation in snake_case
-        - `{{animation_kebab_case}}`: Name of the animation in kebab-case
-    - `{{state_machines}}`: List of state machines for the artboard
-    - For each state machine `{{#state_machines}}`:
-        - `{{state_machine_name}}`: Name of the state machine
-        - `{{state_machine_camel_case}}`: Name of the state machine in camelCase
-        - `{{state_machine_pascal_case}}`: Name of the state machine in PascalCase
-        - `{{state_machine_snake_case}}`: Name of the state machine in snake_case
-        - `{{state_machine_kebab_case}}`: Name of the state machine in kebab-case
-        - `{{inputs}}`: List of inputs for the state machine
-        - For each input `{{#inputs}}`:
-            - `{{input_name}}`: Name of the input
-            - `{{input_type}}`: Type of the input
-            - `{{input_default_value}}`: Default value of the input
-    - `{{text_value_runs}}`: List of text value runs for the artboard
-    - For each text value run `{{#text_value_runs}}`:
-        - `{{text_value_run_name}}`: Name of the text value run
-        - `{{text_value_run_camel_case}}`: Name of the text value run in camelCase
-        - `{{text_value_run_pascal_case}}`: Name of the text value run in PascalCase
-        - `{{text_value_run_snake_case}}`: Name of the text value run in snake_case
-        - `{{text_value_run_kebab_case}}`: Name of the text value run in kebab-case
-        - `{{text_value_run_default}}`: Default value of the text value run
-        - `{{text_value_run_default_sanitized}}`: Default value of the text value run with special characters encoded
-    - For each nested text value run `{{#nested_text_value_runs}}`:
-        - `{{nested_text_value_run_name}}`: Name of the nested text value run
-        - `{{nested_text_value_run_path}}`: Path of the nested text value run
+
+  - `{{artboard_name}}`: The original artboard name
+  - `{{artboard_pascal_case}}`: The artboard name in PascalCase
+  - `{{artboard_camel_case}}`: The artboard name in camelCase
+  - `{{artboard_snake_case}}`: The artboard name in snake_case
+  - `{{artboard_kebab_case}}`: The artboard name in kebab-case
+  - `{{animations}}`: List of animation names for the artboard
+  - For each animation `{{#animations}}`:
+    - `{{animation_name}}`: Name of the animation
+    - `{{animation_camel_case}}`: Name of the animation in camelCase
+    - `{{animation_pascal_case}}`: Name of the animation in PascalCase
+    - `{{animation_snake_case}}`: Name of the animation in snake_case
+    - `{{animation_kebab_case}}`: Name of the animation in kebab-case
+  - `{{state_machines}}`: List of state machines for the artboard
+  - For each state machine `{{#state_machines}}`:
+    - `{{state_machine_name}}`: Name of the state machine
+    - `{{state_machine_camel_case}}`: Name of the state machine in camelCase
+    - `{{state_machine_pascal_case}}`: Name of the state machine in PascalCase
+    - `{{state_machine_snake_case}}`: Name of the state machine in snake_case
+    - `{{state_machine_kebab_case}}`: Name of the state machine in kebab-case
+    - `{{inputs}}`: List of inputs for the state machine
+    - For each input `{{#inputs}}`:
+      - `{{input_name}}`: Name of the input
+      - `{{input_type}}`: Type of the input
+      - `{{input_default_value}}`: Default value of the input
+  - `{{text_value_runs}}`: List of text value runs for the artboard
+  - For each text value run `{{#text_value_runs}}`:
+    - `{{text_value_run_name}}`: Name of the text value run
+    - `{{text_value_run_camel_case}}`: Name of the text value run in camelCase
+    - `{{text_value_run_pascal_case}}`: Name of the text value run in PascalCase
+    - `{{text_value_run_snake_case}}`: Name of the text value run in snake_case
+    - `{{text_value_run_kebab_case}}`: Name of the text value run in kebab-case
+    - `{{text_value_run_default}}`: Default value of the text value run
+    - `{{text_value_run_default_sanitized}}`: Default value of the text value run with special characters encoded
+  - For each nested text value run `{{#nested_text_value_runs}}`:
+
+    - `{{nested_text_value_run_name}}`: Name of the nested text value run
+    - `{{nested_text_value_run_path}}`: Path of the nested text value run
+
+  - `{{enums}}`: List of enums in the Rive file
+  - For each enum `{{#enums}}`:
+
+    - `{{enum_name}}`: Name of the enum
+    - `{{enum_camel_case}}`: Name of the enum in camelCase
+    - `{{enum_pascal_case}}`: Name of the enum in PascalCase
+    - `{{enum_snake_case}}`: Name of the enum in snake_case
+    - `{{enum_kebab_case}}`: Name of the enum in kebab-case
+    - `{{enum_values}}`: List of enum values
+    - For each enum value `{{#enum_values}}`:
+      - `{{enum_value_key}}`: Key of the enum value
+      - `{{enum_value_camel_case}}`: Key of the enum value in camelCase
+      - `{{enum_value_pascal_case}}`: Key of the enum value in PascalCase
+      - `{{enum_value_snake_case}}`: Key of the enum value in snake_case
+      - `{{enum_value_kebab_case}}`: Key of the enum value in kebab-case
+
+  - `{{view_models}}`: List of view models in the Rive file
+  - For each view model `{{#view_models}}`:
+    - `{{view_model_name}}`: Name of the view model
+    - `{{view_model_camel_case}}`: Name of the view model in camelCase
+    - `{{view_model_pascal_case}}`: Name of the view model in PascalCase
+    - `{{view_model_snake_case}}`: Name of the view model in snake_case
+    - `{{view_model_kebab_case}}`: Name of the view model in kebab-case
+    - `{{properties}}`: List of properties in the view model
+    - For each property `{{#properties}}`:
+      - `{{property_name}}`: Name of the property
+      - `{{property_camel_case}}`: Name of the property in camelCase
+      - `{{property_pascal_case}}`: Name of the property in PascalCase
+      - `{{property_snake_case}}`: Name of the property in snake_case
+      - `{{property_kebab_case}}`: Name of the property in kebab-case
+      - `{{property_type}}`: Type information for the property
+      - For property type `{{#property_type}}`:
+        - `{{is_view_model}}`: Whether the property is a view model
+        - `{{is_enum}}`: Whether the property is an enum
+        - `{{is_string}}`: Whether the property is a string
+        - `{{is_number}}`: Whether the property is a number
+        - `{{is_integer}}`: Whether the property is an integer
+        - `{{is_boolean}}`: Whether the property is a boolean
+        - `{{is_color}}`: Whether the property is a color
+        - `{{is_list}}`: Whether the property is a list
+        - `{{is_trigger}}`: Whether the property is a trigger
+        - `{{backing_name}}`: Backing name of the property
+        - `{{backing_camel_case}}`: Backing name in camelCase
+        - `{{backing_pascal_case}}`: Backing name in PascalCase
+        - `{{backing_snake_case}}`: Backing name in snake_case
+        - `{{backing_kebab_case}}`: Backing name in kebab-case
 
 **:warning: Warning:** For duplicated names (e.g., multiple artboards, animations, or assets with the same name), the original unique names will be preserved. However, the case-converted versions (such as camelCase, PascalCase, etc.) will have a unique identifier attached to avoid conflicts.
 
 For example:
+
 - Original names: "MyArtboard", "MyArtboard"
 - Unique camelCase: "myArtboard", "myArtboardU1"
 

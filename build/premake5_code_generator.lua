@@ -3,6 +3,7 @@ rive = '../rive-runtime'
 -- dofile(path.join(path.getabsolute(rive) .. '/build', 'premake5.lua'))
 -- dofile(path.join(path.getabsolute(rive) .. '/build', 'rive_build_config.lua'))
 dofile(path.join(path.getabsolute(rive) .. '/premake5_v2.lua'))
+dofile(path.join(path.getabsolute(rive) .. '/renderer/premake5_pls_renderer.lua'))
 
 project('rive_code_generator')
 do
@@ -13,17 +14,14 @@ do
     includedirs({
         '../include',
         rive .. '/include',
-        -- miniaudio,
-        -- yoga,
         '../external/',
     })
 
-    -- links({ 'rive', 'rive_harfbuzz', 'rive_sheenbidi', 'rive_yoga' })
     links({ 'rive' })
 
     files({
         '../src/**.cpp',
-        rive .. '/utils/**.cpp',
+        rive .. '/utils/no_op_factory.cpp',
     })
 
     -- buildoptions({ '-Wall', '-fno-exceptions', '-fno-rtti' })

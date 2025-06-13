@@ -13,6 +13,33 @@
         }{{^last}},{{/last}}
         {{/assets}}
       },
+      "enums": {
+        {{#enums}}
+        "{{enum_camel_case}}": {
+          "name": "{{enum_name}}",
+          "values": {
+            {{#enum_values}}
+            "{{enum_value_camel_case}}": "{{enum_value_key}}"{{^last}},{{/last}}
+            {{/enum_values}}
+          }
+        }{{^last}},{{/last}}
+        {{/enums}}
+      },
+      "viewModels": {
+        {{#view_models}}
+        "{{view_model_camel_case}}": {
+          "name": "{{view_model_name}}",
+          "properties": {
+            {{#properties}}
+            "{{property_camel_case}}": {
+              "name": "{{property_name}}",
+              "type": "{{property_type}}"
+            }{{^last}},{{/last}}
+            {{/properties}}
+          }
+        }{{^last}},{{/last}}
+        {{/view_models}}
+      },
       "artboards": {
         {{#artboards}}
         "{{artboard_camel_case}}": {
