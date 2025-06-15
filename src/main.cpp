@@ -121,7 +121,7 @@ struct RiveFileData
 };
 
 // Helper function to convert a string to the specified case style
-std::string toCaseHelper(const std::string& str, CaseStyle style)
+static std::string toCaseHelper(const std::string& str, CaseStyle style)
 {
     std::stringstream result;
     bool capitalizeNext = (style == CaseStyle::Pascal);
@@ -186,7 +186,7 @@ std::string toCaseHelper(const std::string& str, CaseStyle style)
     return finalResult;
 }
 
-std::string toCamelCase(const std::string& str)
+static std::string toCamelCase(const std::string& str)
 {
     std::string result = toCaseHelper(str, CaseStyle::Camel);
     // Handle Dart reserved keywords
@@ -202,22 +202,22 @@ std::string toCamelCase(const std::string& str)
     return result;
 }
 
-std::string toPascalCase(const std::string& str)
+static std::string toPascalCase(const std::string& str)
 {
     return toCaseHelper(str, CaseStyle::Pascal);
 }
 
-std::string toSnakeCase(const std::string& str)
+static std::string toSnakeCase(const std::string& str)
 {
     return toCaseHelper(str, CaseStyle::Snake);
 }
 
-std::string toKebabCase(const std::string& str)
+static std::string toKebabCase(const std::string& str)
 {
     return toCaseHelper(str, CaseStyle::Kebab);
 }
 
-std::string sanitizeString(const std::string& input)
+static std::string sanitizeString(const std::string& input)
 {
     std::string output;
     for (char c : input)
@@ -295,7 +295,7 @@ static std::vector<std::string> get_animations_from_artboard(
     return animations;
 }
 
-std::vector<std::pair<std::string, std::vector<InputInfo>>>
+static std::vector<std::pair<std::string, std::vector<InputInfo>>>
 get_state_machines_from_artboard(rive::ArtboardInstance* artboard)
 {
     std::vector<std::pair<std::string, std::vector<InputInfo>>> state_machines;
@@ -353,7 +353,7 @@ get_state_machines_from_artboard(rive::ArtboardInstance* artboard)
     return state_machines;
 }
 
-std::vector<std::string> find_riv_files(const std::string& path)
+static std::vector<std::string> find_riv_files(const std::string& path)
 {
     std::vector<std::string> riv_files;
 
@@ -375,7 +375,7 @@ std::vector<std::string> find_riv_files(const std::string& path)
     return riv_files;
 }
 
-std::string makeUnique(const std::string& base,
+static std::string makeUnique(const std::string& base,
                        std::unordered_set<std::string>& usedNames)
 {
     std::string uniqueName = base;
@@ -401,7 +401,7 @@ void findAll(std::vector<T*>& results, rive::ArtboardInstance* artboard)
     }
 }
 
-std::vector<TextValueRunInfo> get_text_value_runs_from_artboard(
+static std::vector<TextValueRunInfo> get_text_value_runs_from_artboard(
     rive::ArtboardInstance* artboard)
 {
     std::vector<rive::TextValueRun*> text_value_runs;
@@ -420,7 +420,7 @@ std::vector<TextValueRunInfo> get_text_value_runs_from_artboard(
     return text_value_runs_info;
 }
 
-std::vector<NestedTextValueRunInfo>
+static std::vector<NestedTextValueRunInfo>
 get_nested_text_value_run_paths_from_artboard(
     rive::ArtboardInstance* artboard,
     const std::string& current_path = "")
@@ -463,7 +463,7 @@ get_nested_text_value_run_paths_from_artboard(
     return nested_text_value_runs_info;
 }
 
-std::vector<AssetInfo> get_assets_from_file(rive::File* file)
+static std::vector<AssetInfo> get_assets_from_file(rive::File* file)
 {
     std::vector<AssetInfo> assetsInfo;
     std::unordered_set<std::string> usedAssetNames;
@@ -501,7 +501,7 @@ std::vector<AssetInfo> get_assets_from_file(rive::File* file)
     return assetsInfo;
 }
 
-std::string dataTypeToString(rive::DataType type)
+static std::string dataTypeToString(rive::DataType type)
 {
     switch (type)
     {
@@ -534,7 +534,7 @@ std::string dataTypeToString(rive::DataType type)
     }
 }
 
-std::optional<RiveFileData> process_riv_file(const std::string& rive_file_path)
+static std::optional<RiveFileData> process_riv_file(const std::string& rive_file_path)
 {
     // Check if the file is empty
     if (std::filesystem::is_empty(rive_file_path))
@@ -668,7 +668,7 @@ std::optional<RiveFileData> process_riv_file(const std::string& rive_file_path)
     return file_data;
 }
 
-std::optional<std::string> read_template_file(const std::string& path)
+static std::optional<std::string> read_template_file(const std::string& path)
 {
     std::ifstream file(path);
     if (!file.is_open())
@@ -709,7 +709,7 @@ int main(int argc, char* argv[])
                                             {"js", Language::JavaScript}},
             CLI::ignore_case));
 
-    CLI11_PARSE(app, argc, argv);
+    CLI11_PARSE(app, argc, argv)
 
     std::string template_str;
     if (!template_path.empty())
