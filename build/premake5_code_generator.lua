@@ -3,7 +3,6 @@ rive = '../rive-runtime'
 -- dofile(path.join(path.getabsolute(rive) .. '/build', 'premake5.lua'))
 -- dofile(path.join(path.getabsolute(rive) .. '/build', 'rive_build_config.lua'))
 dofile(path.join(path.getabsolute(rive) .. '/premake5_v2.lua'))
-dofile(path.join(path.getabsolute(rive) .. '/renderer/premake5_pls_renderer.lua'))
 
 project('rive_code_generator')
 do
@@ -34,4 +33,8 @@ do
     --         -- 'CoreText.framework', 
     --     })
     -- end
+
+    filter "action:vs*"
+        buildoptions { "/EHsc" }
+    filter {}
 end
