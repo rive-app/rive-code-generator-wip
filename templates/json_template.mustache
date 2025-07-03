@@ -47,6 +47,11 @@
                   "defaultValue": "{{input_default_value}}"
                 }{{^last}},{{/last}}
                 {{/inputs}}
+              },
+              "events": {
+                {{#events}}
+                "{{event_camel_case}}": "{{event_name}}"{{^last}},{{/last}}
+                {{/events}}
               }
             }{{^last}},{{/last}}
             {{/state_machines}}
