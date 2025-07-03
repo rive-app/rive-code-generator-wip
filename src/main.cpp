@@ -14,11 +14,16 @@
 #include "rive/generated/animation/state_machine_bool_base.hpp"
 #include "rive/generated/animation/state_machine_number_base.hpp"
 #include "rive/generated/animation/state_machine_trigger_base.hpp"
+#include "rive/animation/state_machine_listener.hpp"
+#include "rive/animation/listener_action.hpp"
+#include "rive/animation/listener_fire_event.hpp"
+#include "rive/event.hpp"
 #include "utils/no_op_factory.hpp"
 #include <cctype>
 #include <sstream>
 #include <vector>
 #include <string>
+#include <set>
 #include "default_template.h"
 
 const std::string generated_file_name = "rive_generated";
@@ -41,6 +46,10 @@ struct InputInfo {
     std::string name;
     std::string type;
     std::string default_value;
+};
+
+struct EventInfo {
+    std::string name;
 };
 
 struct TextValueRunInfo {
@@ -71,6 +80,7 @@ struct ArtboardData
     std::string artboard_kebab_case;
     std::vector<std::string> animations;
     std::vector<std::pair<std::string, std::vector<InputInfo>>> state_machines;
+    std::vector<std::pair<std::string, std::vector<EventInfo>>> state_machine_events;
     std::vector<TextValueRunInfo> text_value_runs;
     std::vector<NestedTextValueRunInfo> nested_text_value_runs;
 };
@@ -284,6 +294,64 @@ std::vector<std::pair<std::string, std::vector<InputInfo>>> get_state_machines_f
     return state_machines;
 }
 
+std::vector<std::pair<std::string, std::vector<EventInfo>>> get_state_machine_events_from_artboard(rive::ArtboardInstance *artboard)
+{
+    std::vector<std::pair<std::string, std::vector<EventInfo>>> state_machine_events;
+    auto stateMachineCount = artboard->stateMachineCount();
+    
+    for (int i = 0; i < stateMachineCount; i++)
+    {
+        auto stateMachineInstance = artboard->stateMachineAt(i);
+        const auto* stateMachine = stateMachineInstance->stateMachine();
+        std::string state_machine_name = stateMachineInstance->name();
+        
+        // Use a set to store unique event names within this state machine
+        std::set<std::string> eventNames;
+        
+        // Iterate through each listener in the state machine template
+        for (size_t listenerIndex = 0; listenerIndex < stateMachine->listenerCount(); ++listenerIndex)
+        {
+            const auto* listener = stateMachine->listener(listenerIndex);
+            
+            // Check each action on this listener
+            for (size_t actionIndex = 0; actionIndex < listener->actionCount(); ++actionIndex)
+            {
+                const auto* action = listener->action(actionIndex);
+                
+                // Check if this action is a fire event action
+                if (action->is<rive::ListenerFireEvent>())
+                {
+                    const auto* fireEvent = action->as<rive::ListenerFireEvent>();
+                    if (fireEvent && fireEvent->eventId() != 0)
+                    {
+                        // Resolve the event ID to get the actual event object
+                        auto eventObject = artboard->resolve(fireEvent->eventId());
+                        if (eventObject && eventObject->is<rive::Event>())
+                        {
+                            const auto* event = eventObject->as<rive::Event>();
+                            if (event && !event->name().empty())
+                            {
+                                eventNames.insert(event->name());
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        
+        // Convert the set to a vector of EventInfo
+        std::vector<EventInfo> events;
+        for (const auto& eventName : eventNames)
+        {
+            events.push_back({eventName});
+        }
+        
+        state_machine_events.emplace_back(state_machine_name, events);
+    }
+    
+    return state_machine_events;
+}
+
 std::vector<std::string> find_riv_files(const std::string &path)
 {
     std::vector<std::string> riv_files;
@@ -461,10 +529,11 @@ std::optional<RiveFileData> process_riv_file(const std::string &rive_file_path)
 
         std::vector<std::string> animations = get_animations_from_artboard(artboard.get());
         std::vector<std::pair<std::string, std::vector<InputInfo>>> state_machines = get_state_machines_from_artboard(artboard.get());
+        std::vector<std::pair<std::string, std::vector<EventInfo>>> state_machine_events = get_state_machine_events_from_artboard(artboard.get());
         std::vector<TextValueRunInfo> text_value_runs = get_text_value_runs_from_artboard(artboard.get());
         std::vector<NestedTextValueRunInfo> nested_text_value_runs = get_nested_text_value_run_paths_from_artboard(artboard.get());
 
-        file_data.artboards.push_back({artboard_name, artboard_pascal_case, artboard_camel_case, artboard_snake_case, artboard_kebab_case, animations, state_machines, text_value_runs, nested_text_value_runs});
+        file_data.artboards.push_back({artboard_name, artboard_pascal_case, artboard_camel_case, artboard_snake_case, artboard_kebab_case, animations, state_machines, state_machine_events, text_value_runs, nested_text_value_runs});
     }
 
     return file_data;
@@ -649,6 +718,31 @@ int main(int argc, char *argv[])
                     inputs.push_back(input_data);
                 }
                 state_machine_data["inputs"] = inputs;
+
+                // Find the corresponding events for this state machine
+                std::unordered_set<std::string> usedEventNames;
+                std::vector<kainjow::mustache::data> events;
+                for (const auto &state_machine_event : artboard.state_machine_events)
+                {
+                    if (state_machine_event.first == state_machine.first) // Match by state machine name
+                    {
+                        for (size_t event_index = 0; event_index < state_machine_event.second.size(); event_index++)
+                        {
+                            const auto &event = state_machine_event.second[event_index];
+                            kainjow::mustache::data event_data;
+                            auto unique_name = makeUnique(event.name, usedEventNames);
+                            event_data["event_name"] = event.name;
+                            event_data["event_camel_case"] = toCamelCase(unique_name);
+                            event_data["event_pascal_case"] = toPascalCase(unique_name);
+                            event_data["event_snake_case"] = toSnakeCase(unique_name);
+                            event_data["event_kebab_case"] = toKebabCase(unique_name);
+                            event_data["last"] = (event_index == state_machine_event.second.size() - 1);
+                            events.push_back(event_data);
+                        }
+                        break; // Found the matching state machine, no need to continue
+                    }
+                }
+                state_machine_data["events"] = events;
 
                 state_machines.push_back(state_machine_data);
             }
