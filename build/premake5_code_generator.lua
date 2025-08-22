@@ -13,17 +13,14 @@ do
     includedirs({
         '../include',
         rive .. '/include',
-        -- miniaudio,
-        -- yoga,
         '../external/',
     })
 
-    -- links({ 'rive', 'rive_harfbuzz', 'rive_sheenbidi', 'rive_yoga' })
     links({ 'rive' })
 
     files({
         '../src/**.cpp',
-        rive .. '/utils/**.cpp',
+        rive .. '/utils/no_op_factory.cpp',
     })
 
     -- buildoptions({ '-Wall', '-fno-exceptions', '-fno-rtti' })
@@ -36,4 +33,8 @@ do
     --         -- 'CoreText.framework', 
     --     })
     -- end
+
+    filter "action:vs*"
+        buildoptions { "/EHsc" }
+    filter {}
 end
