@@ -87,6 +87,7 @@ struct PropertyInfo
     std::string name;
     std::string type;
     std::string backingName;
+    std::string defaultValue; // For enums, stores the default enum value key
 };
 
 struct ViewModelInfo
@@ -106,6 +107,14 @@ struct ArtboardData
     std::vector<std::pair<std::string, std::vector<InputInfo>>> stateMachines;
     std::vector<TextValueRunInfo> textValueRuns;
     std::vector<NestedTextValueRunInfo> nestedTextValueRuns;
+    
+    // Relationship information
+    bool isDefault;
+    uint32_t viewModelId;
+    std::string viewModelName;
+    bool hasViewModel;
+    std::string defaultStateMachineName;
+    bool hasDefaultStateMachine;
 };
 
 struct RiveFileData
@@ -118,6 +127,12 @@ struct RiveFileData
     std::vector<AssetInfo> assets;
     std::vector<EnumInfo> enums;
     std::vector<ViewModelInfo> viewmodels;
+    
+    // Default relationship chain
+    std::string defaultArtboardName;
+    std::string defaultStateMachineName;
+    std::string defaultViewModelName;
+    bool hasDefaults;
 };
 
 // Helper function to convert a string to the specified case style
@@ -260,7 +275,7 @@ static std::string sanitizeString(const std::string& input)
     return output;
 }
 
-static std::unique_ptr<rive::File> openFile(const char name[])
+static rive::rcp<rive::File> openFile(const char name[])
 {
     FILE* f = fopen(name, "rb");
     if (!f)
@@ -602,7 +617,8 @@ static std::optional<RiveFileData> processRiveFile(const std::string& riveFilePa
                     viewModelInfo.properties.push_back(
                         {property.name,
                          dataTypeToString(property.type),
-                         vm->name()});
+                         vm->name(),
+                         ""}); // ViewModels don't have default values
                 }
                 else if (property.type == rive::DataType::enumType)
                 {
@@ -615,18 +631,69 @@ static std::optional<RiveFileData> processRiveFile(const std::string& riveFilePa
                     auto enumProperty = enum_instance->viewModelProperty()
                                             ->as<rive::ViewModelPropertyEnum>();
                     auto enumName = enumProperty->dataEnum()->enumName();
+
+                    // Get the default value from the enum instance
+                    uint32_t defaultIndex = enum_instance->propertyValue();
+                    auto dataEnum = enumProperty->dataEnum();
+                    std::string defaultValue = "";
+                    if (defaultIndex < dataEnum->values().size()) {
+                        defaultValue = dataEnum->values()[defaultIndex]->key();
+                    }
+
                     viewModelInfo.properties.push_back(
                         {property.name,
                          dataTypeToString(property.type),
-                         enumName});
+                         enumName,
+                         defaultValue});
                 }
                 else
                 {
+                    // Get default values for other property types
+                    auto vmi = riveFile->createViewModelInstance(viewModel->name());
+                    std::string defaultValue = "";
+
+                    if (property.type == rive::DataType::boolean) {
+                        auto bool_instance = static_cast<rive::ViewModelInstanceBoolean*>(
+                            vmi->propertyValue(property.name));
+                        defaultValue = bool_instance->propertyValue() ? "true" : "false";
+                    }
+                    else if (property.type == rive::DataType::number) {
+                        auto number_instance = static_cast<rive::ViewModelInstanceNumber*>(
+                            vmi->propertyValue(property.name));
+                        defaultValue = std::to_string(number_instance->propertyValue());
+                    }
+                    else if (property.type == rive::DataType::string) {
+                        auto string_instance = static_cast<rive::ViewModelInstanceString*>(
+                            vmi->propertyValue(property.name));
+                        defaultValue = string_instance->propertyValue();
+                    }
+                    // Trigger and viewModel types don't have default values
+
                     viewModelInfo.properties.push_back(
-                        {property.name, dataTypeToString(property.type)});
+                        {property.name, dataTypeToString(property.type), "", defaultValue});
                 }
             }
             fileData.viewmodels.push_back(viewModelInfo);
+        }
+    }
+
+    // Extract default relationship chain
+    auto defaultArtboard = riveFile->artboard(); // First artboard is default
+    fileData.hasDefaults = (defaultArtboard != nullptr);
+    
+    if (fileData.hasDefaults) {
+        fileData.defaultArtboardName = defaultArtboard->name();
+        
+        // Get default state machine for the default artboard
+        auto defaultStateMachineInstance = defaultArtboard->instance()->defaultStateMachine();
+        if (defaultStateMachineInstance) {
+            fileData.defaultStateMachineName = defaultStateMachineInstance->name();
+        }
+        
+        // Get default viewmodel for the default artboard
+        auto defaultViewModelRuntime = riveFile->defaultArtboardViewModel(defaultArtboard);
+        if (defaultViewModelRuntime) {
+            fileData.defaultViewModelName = defaultViewModelRuntime->name();
         }
     }
 
@@ -656,6 +723,27 @@ static std::optional<RiveFileData> processRiveFile(const std::string& riveFilePa
         std::vector<NestedTextValueRunInfo> nestedTextValueRuns =
             getNestedTextValueRunPathsFromArtboard(artboard.get());
 
+        // Extract relationship information for this artboard
+        bool isDefault = (i == 0); // First artboard is default
+        uint32_t artboardViewModelId = artboard->viewModelId();
+        bool hasViewModel = (artboardViewModelId < fileData.viewmodels.size());
+        std::string viewModelName = "";
+        if (hasViewModel) {
+            viewModelName = fileData.viewmodels[artboardViewModelId].name;
+        }
+        
+        // Get default state machine for this artboard
+        std::string defaultStateMachineName = "";
+        bool hasDefaultStateMachine = false;
+        auto artboardInstance = artboard->instance();
+        if (artboardInstance) {
+            auto defaultStateMachine = artboardInstance->defaultStateMachine();
+            if (defaultStateMachine) {
+                defaultStateMachineName = defaultStateMachine->name();
+                hasDefaultStateMachine = true;
+            }
+        }
+
         fileData.artboards.push_back({artboardName,
                                        artboardPascalCase,
                                        artboardCameCase,
@@ -664,7 +752,13 @@ static std::optional<RiveFileData> processRiveFile(const std::string& riveFilePa
                                        animations,
                                        stateMachines,
                                        textValueRuns,
-                                       nestedTextValueRuns});
+                                       nestedTextValueRuns,
+                                       isDefault,
+                                       artboardViewModelId,
+                                       viewModelName,
+                                       hasViewModel,
+                                       defaultStateMachineName,
+                                       hasDefaultStateMachine});
     }
 
     return fileData;
@@ -778,6 +872,12 @@ int main(int argc, char* argv[])
         riveFileData["riv_snake_case"] = fileData.riveSnakeCase;
         riveFileData["riv_kebab_case"] = fileData.rivKebabCase;
         riveFileData["last"] = (fileIndex == riveFileDataList.size() - 1);
+        
+        // Add default relationship chain
+        riveFileData["has_defaults"] = fileData.hasDefaults;
+        riveFileData["default_artboard_name"] = fileData.defaultArtboardName;
+        riveFileData["default_state_machine_name"] = fileData.defaultStateMachineName;
+        riveFileData["default_view_model_name"] = fileData.defaultViewModelName;
 
         // Add enums to template data
         std::vector<kainjow::mustache::data> enums;
@@ -831,6 +931,7 @@ int main(int argc, char* argv[])
                 toKebabCase(viewModel.name);
             viewmodelData["last"] =
                 (vmIndex == fileData.viewmodels.size() - 1);
+            viewmodelData["is_first"] = (vmIndex == 0);
 
             std::vector<kainjow::mustache::data> properties;
             for (size_t propIndex = 0;
@@ -874,6 +975,18 @@ int main(int argc, char* argv[])
                                        toSnakeCase(property.backingName));
                 propertyTypeData.set("backing_kebab_case",
                                        toKebabCase(property.backingName));
+
+                // Add default values for properties
+                if (!property.defaultValue.empty()) {
+                    propertyTypeData.set("default_value", property.defaultValue);
+
+                    if (property.type == "enum") {
+                        propertyTypeData.set("enum_default_value", property.defaultValue);
+                        propertyTypeData.set("enum_default_value_camel",
+                                               toCamelCase(property.defaultValue));
+                    }
+                }
+
                 propertyData.set("property_type", propertyTypeData);
 
                 propertyData["last"] =
@@ -920,6 +1033,14 @@ int main(int argc, char* argv[])
             artboardData["artboard_kebab_case"] = artboard.artboardKebabCase;
             artboardData["last"] =
                 (artboardIndex == fileData.artboards.size() - 1);
+            
+            // Add relationship information
+            artboardData["is_default"] = artboard.isDefault;
+            artboardData["view_model_id"] = static_cast<int>(artboard.viewModelId);
+            artboardData["view_model_name"] = artboard.viewModelName;
+            artboardData["has_view_model"] = artboard.hasViewModel;
+            artboardData["default_state_machine_name"] = artboard.defaultStateMachineName;
+            artboardData["has_default_state_machine"] = artboard.hasDefaultStateMachine;
 
             std::unordered_set<std::string> usedAnimationNames;
             std::vector<kainjow::mustache::data> animations;
