@@ -1,6 +1,7 @@
 #include <cctype>
 #include <filesystem>
 #include <fstream>
+#include <iomanip>
 #include <iostream>
 #include <optional>
 #include <sstream>
@@ -119,6 +120,7 @@ struct ArtboardData
 
 struct RiveFileData
 {
+    std::string rivOriginalFileName;
     std::string rivPascalCase;
     std::string rivCameCase;
     std::string riveSnakeCase;
@@ -299,21 +301,59 @@ static rive::rcp<rive::File> openFile(const char name[])
     return rive::File::import(bytes, &gFactory);
 }
 
+static bool shouldIncludeElement(const std::string& name, bool ignorePrivate)
+{
+    if (!ignorePrivate)
+    {
+        return true;
+    }
+
+    // Check for underscore prefix
+    if (!name.empty() && name[0] == '_')
+    {
+        return false;
+    }
+
+    // Check for "internal" or "private" prefix (case-insensitive)
+    std::string lowerName = name;
+    std::transform(lowerName.begin(), lowerName.end(), lowerName.begin(), ::tolower);
+
+    if (lowerName.rfind("internal", 0) == 0)
+    {
+        return false;
+    }
+
+    if (lowerName.rfind("private", 0) == 0)
+    {
+        return false;
+    }
+
+    return true;
+}
+
 static std::vector<std::string> getAnimationsFromArtboard(
-    rive::ArtboardInstance* artboard)
+    rive::ArtboardInstance* artboard, bool ignorePrivate = false)
 {
     std::vector<std::string> animations;
     auto animationCount = artboard->animationCount();
     for (int i = 0; i < animationCount; i++)
     {
         auto animation = artboard->animationAt(i);
-        animations.push_back(animation->name());
+        std::string animationName = animation->name();
+
+        // Skip animations that start with internal/private/_
+        if (!shouldIncludeElement(animationName, ignorePrivate))
+        {
+            continue;
+        }
+
+        animations.push_back(animationName);
     }
     return animations;
 }
 
 static std::vector<std::pair<std::string, std::vector<InputInfo>>>
-getStateMachinesFromArtboard(rive::ArtboardInstance* artboard)
+getStateMachinesFromArtboard(rive::ArtboardInstance* artboard, bool ignorePrivate = false)
 {
     std::vector<std::pair<std::string, std::vector<InputInfo>>> stateMachines;
     auto stateMachineCount = artboard->stateMachineCount();
@@ -321,6 +361,12 @@ getStateMachinesFromArtboard(rive::ArtboardInstance* artboard)
     {
         auto stateMachine = artboard->stateMachineAt(i);
         std::string stateMachineName = stateMachine->name();
+
+        // Skip state machines that start with internal/private/_
+        if (!shouldIncludeElement(stateMachineName, ignorePrivate))
+        {
+            continue;
+        }
 
         std::vector<InputInfo> inputs;
         auto inputCount = stateMachine->inputCount();
@@ -551,7 +597,7 @@ static std::string dataTypeToString(rive::DataType type)
     }
 }
 
-static std::optional<RiveFileData> processRiveFile(const std::string& riveFilePath)
+static std::optional<RiveFileData> processRiveFile(const std::string& riveFilePath, bool ignorePrivate = false)
 {
     // Check if the file is empty
     if (std::filesystem::is_empty(riveFilePath))
@@ -573,6 +619,7 @@ static std::optional<RiveFileData> processRiveFile(const std::string& riveFilePa
     std::string fileNameWithoutExtension = path.stem().string();
     std::vector<AssetInfo> assets = getAssetsFromFile(riveFile.get());
     RiveFileData fileData;
+    fileData.rivOriginalFileName = fileNameWithoutExtension;  // Preserve original filename
     fileData.rivPascalCase = toPascalCase(fileNameWithoutExtension);
     fileData.rivCameCase = toCamelCase(fileNameWithoutExtension);
     fileData.riveSnakeCase = toSnakeCase(fileNameWithoutExtension);
@@ -596,17 +643,32 @@ static std::optional<RiveFileData> processRiveFile(const std::string& riveFilePa
         }
     }
 
+    // Track which enums are actually used by non-filtered ViewModels
+    std::unordered_set<std::string> usedEnumNames;
+
     // Process view models
     for (size_t i = 0; i < riveFile->viewModelCount(); i++)
     {
         auto viewModel = riveFile->viewModelByIndex(i);
         if (viewModel)
         {
+            // Skip view models that start with internal/private/_
+            if (!shouldIncludeElement(viewModel->name(), ignorePrivate))
+            {
+                continue;
+            }
+
             ViewModelInfo viewModelInfo;
             viewModelInfo.name = viewModel->name();
             auto propertiesData = viewModel->properties();
             for (const auto& property : propertiesData)
             {
+                // Skip properties that start with internal/private/_
+                if (!shouldIncludeElement(property.name, ignorePrivate))
+                {
+                    continue;
+                }
+
                 if (property.type == rive::DataType::viewModel)
                 {
                     // TODO: this is a hack
@@ -614,6 +676,13 @@ static std::optional<RiveFileData> processRiveFile(const std::string& riveFilePa
                         viewModel->createInstance()->propertyViewModel(
                             property.name);
                     auto vm = nestedViewModel->instance()->viewModel();
+
+                    // Skip nested ViewModels that have private names
+                    if (!shouldIncludeElement(vm->name(), ignorePrivate))
+                    {
+                        continue;
+                    }
+
                     viewModelInfo.properties.push_back(
                         {property.name,
                          dataTypeToString(property.type),
@@ -631,6 +700,9 @@ static std::optional<RiveFileData> processRiveFile(const std::string& riveFilePa
                     auto enumProperty = enum_instance->viewModelProperty()
                                             ->as<rive::ViewModelPropertyEnum>();
                     auto enumName = enumProperty->dataEnum()->enumName();
+
+                    // Track that this enum is used by a non-filtered ViewModel
+                    usedEnumNames.insert(enumName);
 
                     // Get the default value from the enum instance
                     uint32_t defaultIndex = enum_instance->propertyValue();
@@ -667,7 +739,21 @@ static std::optional<RiveFileData> processRiveFile(const std::string& riveFilePa
                             vmi->propertyValue(property.name));
                         defaultValue = string_instance->propertyValue();
                     }
-                    // Trigger and viewModel types don't have default values
+                    else if (property.type == rive::DataType::color) {
+                        auto color_instance = static_cast<rive::ViewModelInstanceColor*>(
+                            vmi->propertyValue(property.name));
+                        int colorValue = color_instance->propertyValue();
+                        // Format as hex string (0xAARRGGBB)
+                        std::stringstream ss;
+                        ss << "0x" << std::hex << std::uppercase << std::setfill('0')
+                           << std::setw(8) << static_cast<unsigned int>(colorValue);
+                        defaultValue = ss.str();
+                    }
+                    else if (property.type == rive::DataType::assetImage) {
+                        // Image properties don't have extractable default values
+                        defaultValue = "";
+                    }
+                    // Trigger and other types don't have default values
 
                     viewModelInfo.properties.push_back(
                         {property.name, dataTypeToString(property.type), "", defaultValue});
@@ -675,6 +761,22 @@ static std::optional<RiveFileData> processRiveFile(const std::string& riveFilePa
             }
             fileData.viewmodels.push_back(viewModelInfo);
         }
+    }
+
+    // Filter enums to only include those used by non-filtered ViewModels
+    // If ignorePrivate is enabled and we have ViewModels, only keep enums that are actually used
+    if (ignorePrivate && !fileData.viewmodels.empty())
+    {
+        std::vector<EnumInfo> filteredEnums;
+        for (const auto& enumInfo : fileData.enums)
+        {
+            // Keep enum if it's used by a non-filtered ViewModel
+            if (usedEnumNames.count(enumInfo.name) > 0)
+            {
+                filteredEnums.push_back(enumInfo);
+            }
+        }
+        fileData.enums = filteredEnums;
     }
 
     // Extract default relationship chain
@@ -705,6 +807,12 @@ static std::optional<RiveFileData> processRiveFile(const std::string& riveFilePa
         auto artboard = riveFile->artboardAt(i);
         std::string artboardName = artboard->name();
 
+        // Skip artboards that start with internal/private/_
+        if (!shouldIncludeElement(artboardName, ignorePrivate))
+        {
+            continue;
+        }
+
         std::string artboardPascalCase = toPascalCase(artboardName);
         std::string artboardCameCase = toCamelCase(artboardName);
         std::string artboardSnakeCase = toSnakeCase(artboardName);
@@ -715,9 +823,9 @@ static std::optional<RiveFileData> processRiveFile(const std::string& riveFilePa
             makeUnique(artboardCameCase, usedArtboardNames);
 
         std::vector<std::string> animations =
-            getAnimationsFromArtboard(artboard.get());
+            getAnimationsFromArtboard(artboard.get(), ignorePrivate);
         std::vector<std::pair<std::string, std::vector<InputInfo>>>
-            stateMachines = getStateMachinesFromArtboard(artboard.get());
+            stateMachines = getStateMachinesFromArtboard(artboard.get(), ignorePrivate);
         std::vector<TextValueRunInfo> textValueRuns =
             getTextValueRunsFromArtboard(artboard.get());
         std::vector<NestedTextValueRunInfo> nestedTextValueRuns =
@@ -785,6 +893,7 @@ int main(int argc, char* argv[])
     std::string outputFilePath;
     std::string templatePath;
     Language language = Language::Dart; // Default to Dart
+    bool ignorePrivate = false;
 
     app.add_option("-i, --input",
                    inputPath,
@@ -804,6 +913,10 @@ int main(int argc, char* argv[])
             std::map<std::string, Language>{{"dart", Language::Dart},
                                             {"js", Language::JavaScript}},
             CLI::ignore_case));
+
+    app.add_flag("--ignore-private",
+                 ignorePrivate,
+                 "Skip artboards, animations, state machines, and properties starting with 'internal', 'private', or '_'");
 
     CLI11_PARSE(app, argc, argv)
 
@@ -850,7 +963,7 @@ int main(int argc, char* argv[])
     std::vector<RiveFileData> riveFileDataList;
     for (const auto& riv_file : riveFiles)
     {
-        auto result = processRiveFile(riv_file);
+        auto result = processRiveFile(riv_file, ignorePrivate);
         if (result)
         {
             riveFileDataList.push_back(*result);
@@ -867,6 +980,7 @@ int main(int argc, char* argv[])
     {
         const auto& fileData = riveFileDataList[fileIndex];
         kainjow::mustache::data riveFileData;
+        riveFileData["riv_original_file_name"] = fileData.rivOriginalFileName;
         riveFileData["riv_pascal_case"] = fileData.rivPascalCase;
         riveFileData["riv_camel_case"] = fileData.rivCameCase;
         riveFileData["riv_snake_case"] = fileData.riveSnakeCase;
@@ -899,11 +1013,16 @@ int main(int argc, char* argv[])
             {
                 const auto& value = enumInfo.values[valueIndex];
                 kainjow::mustache::data valueData;
+                const auto enumValueCamel = toCamelCase(value.key);
                 valueData["enum_value_key"] = value.key;
-                valueData["enum_value_camel_case"] = toCamelCase(value.key);
+                valueData["enum_value_camel_case"] = enumValueCamel;
                 valueData["enum_value_pascal_case"] = toPascalCase(value.key);
                 valueData["enum_value_snake_case"] = toSnakeCase(value.key);
                 valueData["enum_value_kebab_case"] = toKebabCase(value.key);
+                if (value.key != enumValueCamel)
+                {
+                    valueData["enum_value_needs_explicit_value"] = true;
+                }
                 valueData["last"] =
                     (valueIndex == enumInfo.values.size() - 1);
                 enumValues.push_back(valueData);
@@ -964,6 +1083,7 @@ int main(int argc, char* argv[])
                                        property.type == "boolean");
                 propertyTypeData.set("is_color", property.type == "color");
                 propertyTypeData.set("is_list", property.type == "list");
+                propertyTypeData.set("is_image", property.type == "image" || property.type == "assetImage");
                 propertyTypeData.set("is_trigger",
                                        property.type == "trigger");
                 propertyTypeData.set("backing_name", property.backingName);
@@ -1155,6 +1275,42 @@ int main(int argc, char* argv[])
         }
 
         riveFileData["artboards"] = artboardList;
+
+        // Add count flags for conditional generation
+        riveFileData["artboard_count"] = fileData.artboards.size();
+        riveFileData["has_multiple_artboards"] = fileData.artboards.size() > 1;
+
+        // Count total animations and state machines across all artboards
+        size_t totalAnimations = 0;
+        size_t totalStateMachines = 0;
+        for (const auto& artboard : fileData.artboards) {
+            totalAnimations += artboard.animations.size();
+            totalStateMachines += artboard.stateMachines.size();
+        }
+        riveFileData["total_animation_count"] = totalAnimations;
+        riveFileData["has_multiple_animations"] = totalAnimations > 1;
+        riveFileData["total_state_machine_count"] = totalStateMachines;
+        riveFileData["has_state_machines"] = totalStateMachines > 0;
+        riveFileData["has_multiple_state_machines"] = totalStateMachines > 1;
+
+        // Add metadata flag - show metadata if there are multiples of any type
+        bool hasMetadata = fileData.artboards.size() > 1 || totalAnimations > 1 || totalStateMachines > 1;
+        riveFileData["has_metadata"] = hasMetadata;
+
+        // Add view model existence flag
+        bool hasViewModel = !fileData.viewmodels.empty();
+        riveFileData["has_view_model"] = hasViewModel;
+
+        // Add type-safe switching flag - show type-safe methods only if there will be actual methods
+        // Methods are shown when:
+        // - switchArtboard: has_multiple_artboards
+        // - playAnimation: !has_view_model && !has_state_machines && has_multiple_animations
+        // - switchStateMachine: has_multiple_state_machines
+        bool hasTypeSafeSwitching = fileData.artboards.size() > 1 ||
+                                     (!hasViewModel && totalStateMachines == 0 && totalAnimations > 1) ||
+                                     totalStateMachines > 1;
+        riveFileData["has_type_safe_switching"] = hasTypeSafeSwitching;
+
         riveFileList.push_back(riveFileData);
     }
 
