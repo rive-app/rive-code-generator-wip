@@ -11,6 +11,7 @@
 #include "CLIUTILS/CLI11.hpp"
 #include "default_template.h"
 #include "kainjow/mustache.hpp"
+#include "inja.hpp"
 #include "rive/animation/linear_animation_instance.hpp"
 #include "rive/animation/state_machine_input_instance.hpp"
 #include "rive/animation/state_machine_instance.hpp"
@@ -41,6 +42,12 @@ enum class Language
 {
     Dart,
     JavaScript
+};
+
+enum class TemplateEngine
+{
+    Mustache,
+    Inja
 };
 
 struct InputInfo
@@ -885,6 +892,299 @@ static std::optional<std::string> readTemplateFile(const std::string& path)
                        std::istreambuf_iterator<char>());
 }
 
+// Helper function to build JSON data for inja from RiveFileData
+static nlohmann::json buildInjaData(const std::vector<RiveFileData>& riveFileDataList)
+{
+    nlohmann::json data;
+    data["generated_file_name"] = generatedFileName;
+
+    nlohmann::json riveFileList = nlohmann::json::array();
+
+    for (size_t fileIndex = 0; fileIndex < riveFileDataList.size(); fileIndex++)
+    {
+        const auto& fileData = riveFileDataList[fileIndex];
+        nlohmann::json riveFileData;
+
+        riveFileData["riv_original_file_name"] = fileData.rivOriginalFileName;
+        riveFileData["riv_pascal_case"] = fileData.rivPascalCase;
+        riveFileData["riv_camel_case"] = fileData.rivCameCase;
+        riveFileData["riv_snake_case"] = fileData.riveSnakeCase;
+        riveFileData["riv_kebab_case"] = fileData.rivKebabCase;
+        riveFileData["last"] = (fileIndex == riveFileDataList.size() - 1);
+
+        // Add default relationship chain
+        riveFileData["has_defaults"] = fileData.hasDefaults;
+        riveFileData["default_artboard_name"] = fileData.defaultArtboardName;
+        riveFileData["default_artboard_camel_case"] = toCamelCase(fileData.defaultArtboardName);
+        riveFileData["default_state_machine_name"] = fileData.defaultStateMachineName;
+        riveFileData["default_view_model_name"] = fileData.defaultViewModelName;
+
+        // Add enums
+        nlohmann::json enums = nlohmann::json::array();
+        for (size_t enumIndex = 0; enumIndex < fileData.enums.size(); enumIndex++)
+        {
+            const auto& enumInfo = fileData.enums[enumIndex];
+            nlohmann::json enumData;
+            enumData["enum_name"] = enumInfo.name;
+            enumData["enum_camel_case"] = toCamelCase(enumInfo.name);
+            enumData["enum_pascal_case"] = toPascalCase(enumInfo.name);
+            enumData["enum_snake_case"] = toSnakeCase(enumInfo.name);
+            enumData["enum_kebab_case"] = toKebabCase(enumInfo.name);
+            enumData["last"] = (enumIndex == fileData.enums.size() - 1);
+
+            nlohmann::json enumValues = nlohmann::json::array();
+            for (size_t valueIndex = 0; valueIndex < enumInfo.values.size(); valueIndex++)
+            {
+                const auto& value = enumInfo.values[valueIndex];
+                nlohmann::json valueData;
+                const auto enumValueCamel = toCamelCase(value.key);
+                valueData["enum_value_key"] = value.key;
+                valueData["enum_value_camel_case"] = enumValueCamel;
+                valueData["enum_value_pascal_case"] = toPascalCase(value.key);
+                valueData["enum_value_snake_case"] = toSnakeCase(value.key);
+                valueData["enum_value_kebab_case"] = toKebabCase(value.key);
+                if (value.key != enumValueCamel)
+                {
+                    valueData["enum_value_needs_explicit_value"] = true;
+                }
+                valueData["last"] = (valueIndex == enumInfo.values.size() - 1);
+                enumValues.push_back(valueData);
+            }
+            enumData["enum_values"] = enumValues;
+            enums.push_back(enumData);
+        }
+        riveFileData["enums"] = enums;
+
+        // Add view models
+        nlohmann::json viewmodels = nlohmann::json::array();
+        for (size_t vmIndex = 0; vmIndex < fileData.viewmodels.size(); vmIndex++)
+        {
+            const auto& viewModel = fileData.viewmodels[vmIndex];
+            nlohmann::json viewmodelData;
+            viewmodelData["view_model_name"] = viewModel.name;
+            viewmodelData["view_model_camel_case"] = toCamelCase(viewModel.name);
+            viewmodelData["view_model_pascal_case"] = toPascalCase(viewModel.name);
+            viewmodelData["view_model_snake_case"] = toSnakeCase(viewModel.name);
+            viewmodelData["view_model_kebab_case"] = toKebabCase(viewModel.name);
+            viewmodelData["last"] = (vmIndex == fileData.viewmodels.size() - 1);
+            viewmodelData["is_first"] = (vmIndex == 0);
+
+            nlohmann::json properties = nlohmann::json::array();
+            for (size_t propIndex = 0; propIndex < viewModel.properties.size(); propIndex++)
+            {
+                const auto& property = viewModel.properties[propIndex];
+                nlohmann::json propertyData;
+                propertyData["property_name"] = property.name;
+                propertyData["property_camel_case"] = toCamelCase(property.name);
+                propertyData["property_pascal_case"] = toPascalCase(property.name);
+                propertyData["property_snake_case"] = toSnakeCase(property.name);
+                propertyData["property_kebab_case"] = toKebabCase(property.name);
+                propertyData["property_type"] = property.type;
+
+                // Add property type information
+                nlohmann::json propertyTypeData;
+                propertyTypeData["is_view_model"] = (property.type == "viewModel");
+                propertyTypeData["is_enum"] = (property.type == "enum");
+                propertyTypeData["is_string"] = (property.type == "string");
+                propertyTypeData["is_number"] = (property.type == "number");
+                propertyTypeData["is_integer"] = (property.type == "integer");
+                propertyTypeData["is_boolean"] = (property.type == "boolean");
+                propertyTypeData["is_color"] = (property.type == "color");
+                propertyTypeData["is_list"] = (property.type == "list");
+                propertyTypeData["is_image"] = (property.type == "image" || property.type == "assetImage");
+                propertyTypeData["is_trigger"] = (property.type == "trigger");
+                propertyTypeData["backing_name"] = property.backingName;
+                propertyTypeData["backing_camel_case"] = toCamelCase(property.backingName);
+                propertyTypeData["backing_pascal_case"] = toPascalCase(property.backingName);
+                propertyTypeData["backing_snake_case"] = toSnakeCase(property.backingName);
+                propertyTypeData["backing_kebab_case"] = toKebabCase(property.backingName);
+
+                if (!property.defaultValue.empty()) {
+                    propertyTypeData["default_value"] = property.defaultValue;
+
+                    if (property.type == "enum") {
+                        propertyTypeData["enum_default_value"] = property.defaultValue;
+                        propertyTypeData["enum_default_value_camel"] = toCamelCase(property.defaultValue);
+                    }
+                }
+
+                propertyData["property_type"] = propertyTypeData;
+                propertyData["last"] = (propIndex == viewModel.properties.size() - 1);
+                properties.push_back(propertyData);
+            }
+            viewmodelData["properties"] = properties;
+            viewmodels.push_back(viewmodelData);
+        }
+        riveFileData["view_models"] = viewmodels;
+
+        // Add assets
+        nlohmann::json assets = nlohmann::json::array();
+        for (size_t assetIndex = 0; assetIndex < fileData.assets.size(); assetIndex++)
+        {
+            const auto& asset = fileData.assets[assetIndex];
+            nlohmann::json assetData;
+            assetData["asset_name"] = asset.name;
+            assetData["asset_camel_case"] = toCamelCase(asset.name);
+            assetData["asset_pascal_case"] = toPascalCase(asset.name);
+            assetData["asset_snake_case"] = toSnakeCase(asset.name);
+            assetData["asset_kebab_case"] = toKebabCase(asset.name);
+            assetData["asset_type"] = asset.type;
+            assetData["asset_id"] = asset.assetId;
+            assetData["asset_cdn_uuid"] = asset.cdnUuid;
+            assetData["asset_cdn_base_url"] = asset.cdnBaseUrl;
+            assetData["last"] = (assetIndex == fileData.assets.size() - 1);
+            assets.push_back(assetData);
+        }
+        riveFileData["assets"] = assets;
+
+        // Add artboards
+        nlohmann::json artboardList = nlohmann::json::array();
+        for (size_t artboardIndex = 0; artboardIndex < fileData.artboards.size(); artboardIndex++)
+        {
+            const auto& artboard = fileData.artboards[artboardIndex];
+            nlohmann::json artboardData;
+            artboardData["artboard_name"] = artboard.artboardName;
+            artboardData["artboard_pascal_case"] = artboard.artboardPascalCase;
+            artboardData["artboard_camel_case"] = artboard.artboardCameCase;
+            artboardData["artboard_snake_case"] = artboard.artboardSnakeCase;
+            artboardData["artboard_kebab_case"] = artboard.artboardKebabCase;
+            artboardData["last"] = (artboardIndex == fileData.artboards.size() - 1);
+
+            // Add relationship information
+            artboardData["is_default"] = artboard.isDefault;
+            artboardData["view_model_id"] = static_cast<int>(artboard.viewModelId);
+            artboardData["view_model_name"] = artboard.viewModelName;
+            artboardData["has_view_model"] = artboard.hasViewModel;
+            artboardData["default_state_machine_name"] = artboard.defaultStateMachineName;
+            artboardData["has_default_state_machine"] = artboard.hasDefaultStateMachine;
+
+            // Add animations
+            std::unordered_set<std::string> usedAnimationNames;
+            nlohmann::json animations = nlohmann::json::array();
+            for (size_t animIndex = 0; animIndex < artboard.animations.size(); animIndex++)
+            {
+                const auto& animation = artboard.animations[animIndex];
+                nlohmann::json animData;
+                auto uniqueName = makeUnique(animation, usedAnimationNames);
+                animData["animation_name"] = animation;
+                animData["animation_camel_case"] = toCamelCase(uniqueName);
+                animData["animation_pascal_case"] = toPascalCase(uniqueName);
+                animData["animation_snake_case"] = toSnakeCase(uniqueName);
+                animData["animation_kebab_case"] = toKebabCase(uniqueName);
+                animData["last"] = (animIndex == artboard.animations.size() - 1);
+                animations.push_back(animData);
+            }
+            artboardData["animations"] = animations;
+
+            // Add state machines
+            std::unordered_set<std::string> usedStateMachineNames;
+            nlohmann::json stateMachines = nlohmann::json::array();
+            for (size_t smIndex = 0; smIndex < artboard.stateMachines.size(); smIndex++)
+            {
+                const auto& stateMachine = artboard.stateMachines[smIndex];
+                nlohmann::json stateMachineData;
+                auto uniqueName = makeUnique(stateMachine.first, usedStateMachineNames);
+                stateMachineData["state_machine_name"] = stateMachine.first;
+                stateMachineData["state_machine_camel_case"] = toCamelCase(uniqueName);
+                stateMachineData["state_machine_pascal_case"] = toPascalCase(uniqueName);
+                stateMachineData["state_machine_snake_case"] = toSnakeCase(uniqueName);
+                stateMachineData["state_machine_kebab_case"] = toKebabCase(uniqueName);
+                stateMachineData["last"] = (smIndex == artboard.stateMachines.size() - 1);
+
+                // Add inputs
+                std::unordered_set<std::string> usedInputNames;
+                nlohmann::json inputs = nlohmann::json::array();
+                for (size_t inputIndex = 0; inputIndex < stateMachine.second.size(); inputIndex++)
+                {
+                    const auto& input = stateMachine.second[inputIndex];
+                    nlohmann::json inputData;
+                    auto uniqueName = makeUnique(input.name, usedInputNames);
+                    inputData["input_name"] = input.name;
+                    inputData["input_camel_case"] = toCamelCase(uniqueName);
+                    inputData["input_pascal_case"] = toPascalCase(uniqueName);
+                    inputData["input_snake_case"] = toSnakeCase(uniqueName);
+                    inputData["input_kebab_case"] = toKebabCase(uniqueName);
+                    inputData["input_type"] = input.type;
+                    inputData["input_default_value"] = input.defaultValue;
+                    inputData["last"] = (inputIndex == stateMachine.second.size() - 1);
+                    inputs.push_back(inputData);
+                }
+                stateMachineData["inputs"] = inputs;
+                stateMachines.push_back(stateMachineData);
+            }
+            artboardData["state_machines"] = stateMachines;
+
+            // Add text value runs
+            std::unordered_set<std::string> usedTextValueRunNames;
+            nlohmann::json textValueRuns = nlohmann::json::array();
+            for (size_t tvrIndex = 0; tvrIndex < artboard.textValueRuns.size(); tvrIndex++)
+            {
+                const auto& tvr = artboard.textValueRuns[tvrIndex];
+                nlohmann::json tvrData;
+                auto uniqueName = makeUnique(tvr.name, usedTextValueRunNames);
+                tvrData["text_value_run_name"] = tvr.name;
+                tvrData["text_value_run_camel_case"] = toCamelCase(uniqueName);
+                tvrData["text_value_run_pascal_case"] = toPascalCase(uniqueName);
+                tvrData["text_value_run_snake_case"] = toSnakeCase(uniqueName);
+                tvrData["text_value_run_kebab_case"] = toKebabCase(uniqueName);
+                tvrData["text_value_run_default"] = tvr.defaultValue;
+                tvrData["text_value_run_default_sanitized"] = sanitizeString(tvr.defaultValue);
+                tvrData["last"] = (tvrIndex == artboard.textValueRuns.size() - 1);
+                textValueRuns.push_back(tvrData);
+            }
+            artboardData["text_value_runs"] = textValueRuns;
+
+            // Add nested text value runs
+            nlohmann::json nestedTextValueRuns = nlohmann::json::array();
+            for (size_t ntvrIndex = 0; ntvrIndex < artboard.nestedTextValueRuns.size(); ntvrIndex++)
+            {
+                const auto& ntvr = artboard.nestedTextValueRuns[ntvrIndex];
+                nlohmann::json ntvrData;
+                ntvrData["nested_text_value_run_name"] = ntvr.name;
+                ntvrData["nested_text_value_run_path"] = ntvr.path;
+                ntvrData["last"] = (ntvrIndex == artboard.nestedTextValueRuns.size() - 1);
+                nestedTextValueRuns.push_back(ntvrData);
+            }
+            artboardData["nested_text_value_runs"] = nestedTextValueRuns;
+
+            artboardList.push_back(artboardData);
+        }
+        riveFileData["artboards"] = artboardList;
+
+        // Add count flags
+        riveFileData["artboard_count"] = fileData.artboards.size();
+        riveFileData["has_multiple_artboards"] = fileData.artboards.size() > 1;
+
+        size_t totalAnimations = 0;
+        size_t totalStateMachines = 0;
+        for (const auto& artboard : fileData.artboards) {
+            totalAnimations += artboard.animations.size();
+            totalStateMachines += artboard.stateMachines.size();
+        }
+        riveFileData["total_animation_count"] = totalAnimations;
+        riveFileData["has_multiple_animations"] = totalAnimations > 1;
+        riveFileData["total_state_machine_count"] = totalStateMachines;
+        riveFileData["has_state_machines"] = totalStateMachines > 0;
+        riveFileData["has_multiple_state_machines"] = totalStateMachines > 1;
+
+        bool hasMetadata = fileData.artboards.size() > 1 || totalAnimations > 1 || totalStateMachines > 1;
+        riveFileData["has_metadata"] = hasMetadata;
+
+        bool hasViewModel = !fileData.viewmodels.empty();
+        riveFileData["has_view_model"] = hasViewModel;
+
+        bool hasTypeSafeSwitching = fileData.artboards.size() > 1 ||
+                                     (!hasViewModel && totalStateMachines == 0 && totalAnimations > 1) ||
+                                     totalStateMachines > 1;
+        riveFileData["has_type_safe_switching"] = hasTypeSafeSwitching;
+
+        riveFileList.push_back(riveFileData);
+    }
+
+    data["riv_files"] = riveFileList;
+    return data;
+}
+
 int main(int argc, char* argv[])
 {
     CLI::App app{"Rive Code Generator"};
@@ -893,6 +1193,7 @@ int main(int argc, char* argv[])
     std::string outputFilePath;
     std::string templatePath;
     Language language = Language::Dart; // Default to Dart
+    TemplateEngine templateEngine = TemplateEngine::Mustache; // Default to Mustache for backwards compatibility
     bool ignorePrivate = false;
 
     app.add_option("-i, --input",
@@ -912,6 +1213,14 @@ int main(int argc, char* argv[])
         ->transform(CLI::CheckedTransformer(
             std::map<std::string, Language>{{"dart", Language::Dart},
                                             {"js", Language::JavaScript}},
+            CLI::ignore_case));
+
+    app.add_option("-e, --engine",
+                   templateEngine,
+                   "Template engine to use (mustache or inja)")
+        ->transform(CLI::CheckedTransformer(
+            std::map<std::string, TemplateEngine>{{"mustache", TemplateEngine::Mustache},
+                                                   {"inja", TemplateEngine::Inja}},
             CLI::ignore_case));
 
     app.add_flag("--ignore-private",
@@ -990,6 +1299,7 @@ int main(int argc, char* argv[])
         // Add default relationship chain
         riveFileData["has_defaults"] = fileData.hasDefaults;
         riveFileData["default_artboard_name"] = fileData.defaultArtboardName;
+        riveFileData["default_artboard_camel_case"] = toCamelCase(fileData.defaultArtboardName);
         riveFileData["default_state_machine_name"] = fileData.defaultStateMachineName;
         riveFileData["default_view_model_name"] = fileData.defaultViewModelName;
 
@@ -1317,8 +1627,45 @@ int main(int argc, char* argv[])
     templateData["generated_file_name"] = generatedFileName;
     templateData["riv_files"] = riveFileList;
 
-    kainjow::mustache::mustache tmpl(templateStr);
-    std::string result = tmpl.render(templateData);
+    // Render template based on selected engine
+    std::string result;
+    if (templateEngine == TemplateEngine::Mustache)
+    {
+        kainjow::mustache::mustache tmpl(templateStr);
+        result = tmpl.render(templateData);
+        std::cout << "Using Mustache template engine" << std::endl;
+    }
+    else if (templateEngine == TemplateEngine::Inja)
+    {
+        try
+        {
+            // Build inja-compatible JSON directly from riveFileDataList
+            nlohmann::json injaData = buildInjaData(riveFileDataList);
+
+            inja::Environment env;
+
+            // Configure inja settings for optimal performance
+            env.set_trim_blocks(true);
+            env.set_lstrip_blocks(true);
+            env.set_html_autoescape(false);  // Disable HTML escaping (not needed for Swift code)
+            env.set_throw_at_missing_includes(false);  // No includes in our templates
+
+            // Pre-parse template for better performance
+            auto tmpl = env.parse(templateStr);
+            result = env.render(tmpl, injaData);
+            std::cout << "Using Inja template engine" << std::endl;
+        }
+        catch (const std::exception& e)
+        {
+            std::cerr << "Error: Inja rendering failed: " << e.what() << std::endl;
+            return 1;
+        }
+    }
+    else
+    {
+        std::cerr << "Error: Unknown template engine" << std::endl;
+        return 1;
+    }
 
     std::cout << "Rive: output_file_path = " << outputFilePath << std::endl;
 
