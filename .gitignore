@@ -5,6 +5,7 @@ build/dependencies
 
 # examples
 examples/generated/
+output/
 
 # test
 test/output/
