@@ -1,0 +1,63 @@
+// {{generated_file_name}}_viewmodels.dart
+
+// ignore_for_file: lines_longer_than_80_chars, unused_field
+
+import 'dart:ui';
+import 'package:rive_native/rive_native.dart' as rive;
+
+/// ViewModel classes for Rive files
+{{#riv_files}}
+// ----------------------
+// {{riv_camel_case}} ViewModels
+// ----------------------
+
+{{#enums}}
+/// Enum for {{enum_name}}
+enum {{enum_pascal_case}}Enum {
+  {{#enum_values}}
+  {{enum_value_camel_case}}('{{enum_value_key}}'){{^last}},{{/last}}{{#last}};{{/last}}
+  {{/enum_values}}
+
+  final String value;
+  const {{enum_pascal_case}}Enum(this.value);
+
+  @override
+  String toString() => value;
+}
+{{/enums}}
+
+{{#view_models}}
+/// ViewModel class for {{view_model_name}}
+class {{view_model_pascal_case}} {
+  final rive.ViewModelInstance instance;
+  {{#properties}}
+  {{#property_type}}{{#is_view_model}}final {{backing_pascal_case}} {{property_camel_case}};{{/is_view_model}}{{/property_type}}{{#property_type}}final {{#is_view_model}}rive.ViewModelInstance{{/is_view_model}}{{#is_enum}}rive.ViewModelInstanceEnum{{/is_enum}}{{#is_string}}rive.ViewModelInstanceString{{/is_string}}{{#is_number}}rive.ViewModelInstanceNumber{{/is_number}}{{#is_boolean}}rive.ViewModelInstanceBoolean{{/is_boolean}}{{#is_color}}rive.ViewModelInstanceColor{{/is_color}}{{#is_trigger}}rive.ViewModelInstanceTrigger{{/is_trigger}} _{{property_camel_case}}Property;{{/property_type}}
+  {{/properties}}
+
+  {{view_model_pascal_case}}(this.instance): {{#properties}}
+  {{#property_type}}{{#is_view_model}}{{property_camel_case}} = {{backing_pascal_case}}(instance.viewModel('{{property_name}}')!),{{/is_view_model}}{{/property_type}}
+  {{#property_type}}
+  _{{property_camel_case}}Property = instance.{{#is_view_model}}viewModel{{/is_view_model}}{{#is_enum}}enumerator{{/is_enum}}{{#is_string}}string{{/is_string}}{{#is_number}}number{{/is_number}}{{#is_boolean}}boolean{{/is_boolean}}{{#is_color}}color{{/is_color}}{{#is_trigger}}trigger{{/is_trigger}}('{{property_name}}')!{{^last}},{{/last}}{{#last}};{{/last}}
+  {{/property_type}}
+  {{/properties}}
+
+  {{#properties}}
+  {{#property_type}}{{#is_enum}}{{backing_pascal_case}}Enum get {{property_camel_case}} => {{backing_pascal_case}}Enum.values.byName(_{{property_camel_case}}Property.value.toLowerCase());
+  set {{property_camel_case}}({{backing_pascal_case}}Enum value) => _{{property_camel_case}}Property.value = value.value;{{/is_enum}}{{#is_string}}String get {{property_camel_case}} => _{{property_camel_case}}Property.value;
+  set {{property_camel_case}}(String value) => _{{property_camel_case}}Property.value = value;{{/is_string}}{{#is_number}}double get {{property_camel_case}} => _{{property_camel_case}}Property.value;
+  set {{property_camel_case}}(double value) => _{{property_camel_case}}Property.value = value;{{/is_number}}{{#is_boolean}}bool get {{property_camel_case}} => _{{property_camel_case}}Property.value;
+  set {{property_camel_case}}(bool value) => _{{property_camel_case}}Property.value = value;{{/is_boolean}}{{#is_color}}Color get {{property_camel_case}} => _{{property_camel_case}}Property.value;
+  set {{property_camel_case}}(Color value) => _{{property_camel_case}}Property.value = value;{{/is_color}}{{#is_list}}List<dynamic> get {{property_camel_case}} => _{{property_camel_case}}Property.value;
+  set {{property_camel_case}}(List<dynamic> value) => _{{property_camel_case}}Property.value = value;{{/is_list}}{{#is_trigger}}void {{property_camel_case}}() => _{{property_camel_case}}Property.trigger();{{/is_trigger}}{{/property_type}}
+  {{/properties}}
+
+  Map<String, dynamic> toJson() {
+    return {
+      {{#properties}}
+      {{#property_type}}{{#is_view_model}}'{{property_name}}': {{property_camel_case}}.toJson(),{{/is_view_model}}{{#is_enum}}'{{property_name}}': {{property_camel_case}}.value,{{/is_enum}}{{#is_string}}'{{property_name}}': {{property_camel_case}},{{/is_string}}{{#is_number}}'{{property_name}}': {{property_camel_case}},{{/is_number}}{{#is_boolean}}'{{property_name}}': {{property_camel_case}},{{/is_boolean}}{{#is_color}}'{{property_name}}': {{property_camel_case}}.value,{{/is_color}}{{#is_list}}'{{property_name}}': {{property_camel_case}},{{/is_list}}{{/property_type}}
+      {{/properties}}
+    };
+  }
+}
+{{/view_models}}
+{{/riv_files}}

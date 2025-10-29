@@ -1,6 +1,7 @@
 # build
 build/out
 build/macosx
+build/dependencies
 
 # examples
 examples/generated/

@@ -1,0 +1,83 @@
+BasedOnStyle: LLVM
+IndentWidth: 4
+UseTab: Never
+TabWidth: 4
+IndentCaseLabels: true
+Language: Cpp
+# Force pointers to the type for C++.
+DerivePointerAlignment: false
+PointerAlignment: Left
+NamespaceIndentation: None
+AccessModifierOffset: -4
+BreakConstructorInitializers: AfterColon
+ConstructorInitializerAllOnOneLineOrOnePerLine: true
+ColumnLimit: 80
+BinPackArguments: false
+BinPackParameters: false
+AlignAfterOpenBracket: Align
+AllowAllArgumentsOnNextLine: false
+AllowAllParametersOfDeclarationOnNextLine: false
+AllowShortCaseLabelsOnASingleLine: false
+PenaltyReturnTypeOnItsOwnLine: 9999
+PenaltyExcessCharacter: 9999
+PenaltyBreakComment: 300
+PenaltyBreakFirstLessLess: 120
+PenaltyBreakString: 999
+BreakBeforeBraces: Custom
+SortIncludes: false
+BraceWrapping:
+  AfterEnum: true
+  AfterClass: true
+  AfterControlStatement: true
+  AfterNamespace: true
+  AfterFunction: true
+  AfterStruct: true
+  AfterObjCDeclaration: true
+  AfterUnion: true
+  AfterExternBlock: true
+  BeforeCatch: true
+  BeforeElse: true
+  AfterCaseLabel: true
+  IndentBraces: false
+  SplitEmptyFunction: false
+  SplitEmptyRecord: false
+  SplitEmptyNamespace: false
+---
+Language: ObjC
+# Force pointers to the type for C++.
+DerivePointerAlignment: false
+IndentWidth: 4
+IndentCaseLabels: True
+PointerAlignment: Left
+NamespaceIndentation: None
+AccessModifierOffset: -4
+BreakConstructorInitializers: AfterColon
+ConstructorInitializerAllOnOneLineOrOnePerLine: true
+ColumnLimit: 80
+BinPackArguments: false
+BinPackParameters: false
+AlignAfterOpenBracket: Align
+BreakBeforeBraces: Custom
+SortIncludes: false
+PenaltyReturnTypeOnItsOwnLine: 9999
+PenaltyExcessCharacter: 9999
+PenaltyBreakComment: 300
+PenaltyBreakFirstLessLess: 120
+PenaltyBreakString: 999
+BraceWrapping:
+  AfterEnum: true
+  AfterClass: true
+  AfterControlStatement: true
+  AfterNamespace: true
+  AfterFunction: true
+  AfterStruct: true
+  AfterObjCDeclaration: true
+  AfterUnion: true
+  AfterExternBlock: true
+  BeforeCatch: true
+  BeforeElse: true
+  AfterCaseLabel: true
+  IndentBraces: false
+  SplitEmptyFunction: false
+  SplitEmptyRecord: false
+  SplitEmptyNamespace: false
