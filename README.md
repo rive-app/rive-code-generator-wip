@@ -53,6 +53,10 @@ See the [release workflow](.github/workflows/release_workflow.yaml) for release 
 
 The latest release can be downloaded from the [Releases](https://github.com/rive-app/rive-code-generator-wip/releases) page.
 
+## Setup
+
+See [CONTRIBUTING.md](./CONTRIBUTING.md) for detailed setup instructions.
+
 ## Usage
 
 Run the code generator using:
@@ -64,7 +68,7 @@ Run the code generator using:
 Example:
 
 ```sh
-./build/out/lib/release/rive_code_generator -i ./examples/rive_files/animation.riv -o ./examples/generated_code.dart -l dart
+./build/out/lib/debug/rive_code_generator -i ./samples/rewards.riv -o ./output/generated_code.dart -l dart
 ```
 
 ## Custom Templates
@@ -72,7 +76,7 @@ Example:
 You can use custom Mustache templates for code generation:
 
 ```sh
-./build/out/lib/release/rive_code_generator -i ./rive_files/ -o ./output/rive.json -t templates/json_template.mustache
+./build/out/lib/debug/rive_code_generator -i ./samples/rewards.riv -o ./output/rive.dart -t templates/viewmodel_template.mustache
 ```
 
 Sample templates are available in the [`templates`](./templates) directory.
