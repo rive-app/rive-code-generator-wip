@@ -116,7 +116,7 @@ fi
 
 OUT="out/lib/$CONFIG"
 OUT="${OUT%/}" # Remove trailing slash if it exists
-$PREMAKE --scripts=../rive-runtime/build/ --file=premake5_code_generator.lua $TARGET --config=$CONFIG --out=$OUT
+$PREMAKE --scripts=../rive-runtime/build/ --file=premake5_code_generator.lua $TARGET --config=$CONFIG --out=$OUT --with_rive_tools
 
 if [ "$OS" = "macosx" ]; then
   NUM_CORES=$(($(sysctl -n hw.physicalcpu) + 1))
@@ -151,11 +151,11 @@ if [[ $RUN == true ]]; then
 fi
 if [[ $DEV == true ]]; then
     pwd
-    # "$OUT/$EXECUTABLE" -i ../samples/signage_v03.riv -o out/rive_generated.dart -t ../templates/dart_template.mustache
-    # "$OUT/$EXECUTABLE" -i ../samples/rating.riv -o out/rive_generated.dart -t ../templates/dart_template.mustache
-    # "$OUT/$EXECUTABLE" -i ../samples/ -o out/generated/rive_generated.dart -t ../templates/dart_template.mustache
-    "$OUT/$EXECUTABLE" -i ../samples/ -o out/generated/rive_viewmodel.dart -t ../templates/viewmodel_template.mustache
-    # "$OUT/$EXECUTABLE" -i ../samples/ -o out/generated/rive.json -t ../templates/json_template.mustache
+    # "$OUT/$EXECUTABLE" -i ../samples/signage_v03.riv -o out/rive_generated.dart -t ../templates/mustache/dart_template.mustache
+    # "$OUT/$EXECUTABLE" -i ../samples/rating.riv -o out/rive_generated.dart -t ../templates/mustache/dart_template.mustache
+    # "$OUT/$EXECUTABLE" -i ../samples/ -o out/generated/rive_generated.dart -t ../templates/mustache/dart_template.mustache
+    "$OUT/$EXECUTABLE" -i ../samples/ -o out/generated/rive_viewmodel.dart -t ../templates/mustache/viewmodel_template.mustache
+    # "$OUT/$EXECUTABLE" -i ../samples/ -o out/generated/rive.json -t ../templates/mustache/json_template.mustache
     # "$OUT/$EXECUTABLE" -i ../samples/nested_test.riv -o out/rive_generated.dart --help
     # "$OUT/$EXECUTABLE" -i ../samples/ -o out/rive_generated.dart
 fi

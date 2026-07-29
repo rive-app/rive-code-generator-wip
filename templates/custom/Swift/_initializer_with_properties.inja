@@ -1,0 +1,54 @@
+{% for vm in file.view_models -%}
+    {% if loop.is_first -%}
+      {% set has_settable = false -%}
+      {% for prop in vm.properties -%}
+        {% if prop.property_type.is_boolean or prop.property_type.is_number or prop.property_type.is_string or prop.property_type.is_color or prop.property_type.is_enum -%}
+          {% set has_settable = true -%}
+        {% endif -%}
+      {% endfor -%}
+      {% if has_settable %}
+
+    public init(
+        autoPlay: Bool = false,
+        loadCdn: Bool = false,
+        fit: RiveFit = .contain,
+        alignment: RiveAlignment = .center,
+        bundle: Bundle? = nil,
+        properties: Properties = Properties()
+    ) {
+        super.init(
+            configuration: .init(
+                fileName: "{{ file.riv_original_file_name }}",
+                autoPlay: autoPlay,
+                loadCdn: loadCdn,
+                fit: fit,
+                alignment: alignment,
+                bundle: bundle ?? .module
+            ),
+            properties: properties
+        )
+    }
+      {% else %}
+
+    public init(
+        autoPlay: Bool = false,
+        loadCdn: Bool = false,
+        fit: RiveFit = .contain,
+        alignment: RiveAlignment = .center,
+        bundle: Bundle? = nil
+    ) {
+        super.init(
+            configuration: .init(
+                fileName: "{{ file.riv_original_file_name }}",
+                autoPlay: autoPlay,
+                loadCdn: loadCdn,
+                fit: fit,
+                alignment: alignment,
+                bundle: bundle ?? .module
+            ),
+            properties: Properties()
+        )
+    }
+      {% endif -%}
+    {% endif -%}
+  {% endfor -%}

@@ -43,7 +43,7 @@ This tool parses Rive (`.riv`) files and extracts component names, artboards, st
 - Diffing `.riv` files for version control purposes
 - Generating complete code components
 
-The tool uses [Mustache](https://mustache.github.io/) templating for flexible output generation.
+The tool supports both [Mustache](https://mustache.github.io/) and [Inja](https://github.com/pantor/inja) template engines for flexible output generation.
 
 :warning: Note that this tool is still experimental and untested. Feedback and contributions are appreciated.
 
@@ -69,13 +69,49 @@ Example:
 
 ## Custom Templates
 
-You can use custom Mustache templates for code generation:
+You can use custom templates for code generation with either Mustache or Inja template engines:
 
 ```sh
-./build/out/lib/release/rive_code_generator -i ./rive_files/ -o ./output/rive.json -t templates/json_template.mustache
+# Using Mustache template
+./build/out/lib/release/rive_code_generator -i ./rive_files/ -o ./output/rive.json -t templates/mustache/json_template.mustache
+
+# Using Inja template
+./build/out/lib/release/rive_code_generator -i ./rive_files/ -o ./output/rive.json -t templates/inja/json_template.inja -e inja
 ```
 
-Sample templates are available in the [`templates`](./templates) directory.
+Sample templates are available in the [`templates`](./templates) directory:
+- [`templates/mustache/`](./templates/mustache/) - Mustache templates
+- [`templates/inja/`](./templates/inja/) - Inja templates
+
+### Filtering Private Elements
+
+Use the `--ignore-private` flag to exclude elements from code generation based on naming conventions:
+
+```sh
+./build/out/lib/release/rive_code_generator -i ./rive_files/ -o ./output/rive.json -t templates/mustache/json_template.mustache --ignore-private
+```
+
+When enabled, the following elements will be skipped:
+- Elements starting with `_` (underscore)
+- Elements starting with `internal` (case-insensitive)
+- Elements starting with `private` (case-insensitive)
+
+This applies to:
+- **Artboards**: Artboards with private names are excluded
+- **Animations**: Animations with private names are excluded from their artboards
+- **State Machines**: State machines with private names are excluded from their artboards
+- **View Models**: View models with private names are completely excluded
+- **View Model Properties**: Properties with private names are excluded from their view models
+
+**Example:**
+```
+# These will be excluded when --ignore-private is used:
+- Artboard: "_InternalArtboard"
+- Animation: "private_animation"
+- State Machine: "internalStateMachine"
+- View Model: "_TestViewModel"
+- Property: "privateProperty"
+```
 
 ### Template Syntax
 

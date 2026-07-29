@@ -1,0 +1,70 @@
+//
+// {{ file.riv_pascal_case }}Generated.swift
+// Generated from {{ file.riv_camel_case }}.riv
+//
+// ⚠️ DO NOT EDIT - This file is auto-generated from {{ file.riv_camel_case }}.riv
+// Regenerate with: make rive-codegen
+//
+// MARK: - Rive File Structure
+//
+{% if file.has_defaults -%}
+// ┌─ Default Configuration
+// │  • Artboard: {{ file.default_artboard_name }}
+{% if file.default_state_machine_name -%}
+// │  • State Machine: {{ file.default_state_machine_name }}
+{% endif -%}
+{% if file.default_view_model_name -%}
+// │  • View Model: {{ file.default_view_model_name }}
+{% endif -%}
+// │
+{% endif -%}
+// ├─ Artboards
+{% for artboard in file.artboards -%}
+  // │  {% if artboard.artboard_name == file.default_artboard_name %}├─ [DEFAULT] {% else %}├─ {% endif %}{{ artboard.artboard_name }}
+  {% for anim in artboard.animations -%}
+  // │  │  ├─ Animation: {{ anim.animation_name }}
+  {% endfor -%}
+  {% for sm in artboard.state_machines -%}
+  // │  │  ├─ State Machine: {{ sm.state_machine_name }}
+  {% endfor -%}
+  {% if artboard.view_model_name and artboard.view_model_name != "" -%}
+  // │  │  └─ View Model: {{ artboard.view_model_name }}
+  {% endif -%}
+{% endfor -%}
+// │
+// └─ View Models
+{% for vm in file.view_models -%}
+  //    {% if loop.is_first %}├─ [MAIN] {% else %}├─ {% endif %}{{ vm.view_model_name }}
+  {% for prop in vm.properties -%}
+    {% if prop.property_type.is_boolean -%}
+  //    │  ├─ {{ prop.property_name }}: Bool = {% if existsIn(prop.property_type, "default_value") %}{{ prop.property_type.default_value }}{% else %}false{% endif %}
+
+    {% endif -%}
+    {% if prop.property_type.is_number -%}
+  //    │  ├─ {{ prop.property_name }}: Float = {% if existsIn(prop.property_type, "default_value") %}{{ prop.property_type.default_value }}{% else %}0.000000{% endif %}
+
+    {% endif -%}
+    {% if prop.property_type.is_string -%}
+  //    │  ├─ {{ prop.property_name }}: String = {% if existsIn(prop.property_type, "default_value") %}"{{ prop.property_type.default_value }}"{% else %}""{% endif %}
+
+    {% endif -%}
+    {% if prop.property_type.is_color -%}
+  //    │  ├─ {{ prop.property_name }}: UIColor{% if existsIn(prop.property_type, "default_value") %} = {{ prop.property_type.default_value }}{% endif %}
+
+    {% endif -%}
+    {% if prop.property_type.is_enum -%}
+  //    │  ├─ {{ prop.property_name }}: {{ prop.property_type.backing_pascal_case }}Enum = {% if existsIn(prop.property_type, "enum_default_value_camel") %}.{{ prop.property_type.enum_default_value_camel }}{% else %}.default{% endif %}
+
+    {% endif -%}
+    {% if prop.property_type.is_trigger -%}
+  //    │  ├─ {{ prop.property_name }}: Trigger
+    {% endif -%}
+    {% if prop.property_type.is_image -%}
+  //    │  ├─ {{ prop.property_name }}: Image
+    {% endif -%}
+    {% if prop.property_type.is_view_model -%}
+  //    │  ├─ {{ prop.property_name }}: {{ prop.property_type.backing_pascal_case }} (nested)
+    {% endif -%}
+  {% endfor -%}
+{% endfor -%}
+//

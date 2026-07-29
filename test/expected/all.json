@@ -8,7 +8,13 @@
           "assetId": "594377",
           "cdnUuid": "",
           "cdnBaseUrl": "https://public.rive.app/cdn/uuid"
-        }
+        },
+      },
+      "enums": {
+        
+      },
+      "viewModels": {
+        
       },
       "artboards": {
         "artboardNr1": {
@@ -68,7 +74,13 @@
           "assetId": "594377",
           "cdnUuid": "",
           "cdnBaseUrl": "https://public.rive.app/cdn/uuid"
-        }
+        },
+      },
+      "enums": {
+        
+      },
+      "viewModels": {
+        
       },
       "artboards": {
         "artboard1": {
@@ -163,8 +175,437 @@
         }
       }
     },
+    "rewards": {
+      "assets": {
+        "mochiyPopOne": {
+          "name": "Mochiy Pop One",
+          "type": "font",
+          "assetId": "37631",
+          "cdnUuid": "",
+          "cdnBaseUrl": "https://public.rive.app/cdn/uuid"
+        },
+        "doHyeon": {
+          "name": "Do Hyeon",
+          "type": "font",
+          "assetId": "36489",
+          "cdnUuid": "",
+          "cdnBaseUrl": "https://public.rive.app/cdn/uuid"
+        },
+        "oxanium": {
+          "name": "Oxanium",
+          "type": "font",
+          "assetId": "38140",
+          "cdnUuid": "",
+          "cdnBaseUrl": "https://public.rive.app/cdn/uuid"
+        },
+      },
+      "enums": {
+        "itemSelection": {
+          "name": "Item_Selection",
+          "values": {
+            "coin": "Coin",
+            "gem": "Gem"
+          }
+        },
+      },
+      "viewModels": {
+        "itemIconValue": {
+          "name": "Item_Icon_Value",
+          "properties": {
+            "iconReact": {
+              "name": "Icon_React",
+              "type": ""
+            },
+            "propertyOfItem": {
+              "name": "Property_Of_Item",
+              "type": ""
+            },
+            "itemValue": {
+              "name": "Item_Value",
+              "type": ""
+            }
+          }
+        },
+        "energyBar": {
+          "name": "Energy_Bar",
+          "properties": {
+            "barColor": {
+              "name": "Bar_Color",
+              "type": ""
+            },
+            "lives": {
+              "name": "Lives",
+              "type": ""
+            },
+            "energyBar": {
+              "name": "Energy_Bar",
+              "type": ""
+            }
+          }
+        },
+        "rewards": {
+          "name": "Rewards",
+          "properties": {
+            "priceValue": {
+              "name": "Price_Value",
+              "type": ""
+            },
+            "color": {
+              "name": "Color",
+              "type": ""
+            },
+            "height": {
+              "name": "Height",
+              "type": ""
+            },
+            "withValue": {
+              "name": "With",
+              "type": ""
+            },
+            "itemSelection": {
+              "name": "Item_Selection",
+              "type": ""
+            },
+            "itemValueIcon": {
+              "name": "Item_Value_Icon",
+              "type": ""
+            },
+            "button": {
+              "name": "Button",
+              "type": ""
+            },
+            "coin": {
+              "name": "Coin",
+              "type": ""
+            },
+            "gem": {
+              "name": "Gem",
+              "type": ""
+            },
+            "energyBar": {
+              "name": "Energy_Bar",
+              "type": ""
+            }
+          }
+        },
+        "button": {
+          "name": "Button",
+          "properties": {
+            "state1": {
+              "name": "State_1",
+              "type": ""
+            },
+            "itemText": {
+              "name": "Item_Text",
+              "type": ""
+            },
+            "item": {
+              "name": "Item",
+              "type": ""
+            },
+            "pressed": {
+              "name": "Pressed",
+              "type": ""
+            }
+          }
+        },
+        "item": {
+          "name": "Item",
+          "properties": {
+            "itemSelection": {
+              "name": "Item_Selection",
+              "type": ""
+            }
+          }
+        }
+      },
+      "artboards": {
+        "main": {
+          "name": "Main",
+          "animations": {
+            "timeline1": "Timeline 1"
+          },
+          "textValueRuns": {
+            
+          },
+          "nestedTextValueRuns": [
+            
+          ],
+          "stateMachines": {
+            "stateMachine1": {
+              "name": "State Machine 1",
+              "inputs": {
+                
+              }
+            }
+          }
+        },
+        "lives2": {
+          "name": "Lives 2",
+          "animations": {
+            "timeline1": "Timeline 1"
+          },
+          "textValueRuns": {
+            
+          },
+          "nestedTextValueRuns": [
+            
+          ],
+          "stateMachines": {
+            "stateMachine1": {
+              "name": "State Machine 1",
+              "inputs": {
+                
+              }
+            }
+          }
+        },
+        "itemValue": {
+          "name": "Item Value",
+          "animations": {
+            "jump": "jump",
+            "idle": "Idle"
+          },
+          "textValueRuns": {
+            
+          },
+          "nestedTextValueRuns": [
+            
+          ],
+          "stateMachines": {
+            "stateMachine1": {
+              "name": "State Machine 1",
+              "inputs": {
+                
+              }
+            }
+          }
+        },
+        "chest": {
+          "name": "Chest",
+          "animations": {
+            "coin": "Coin",
+            "gem": "Gem",
+            "itemsMove": "Items_Move",
+            "itemsIdle": "Items_Idle",
+            "open": "Open",
+            "idle": "Idle"
+          },
+          "textValueRuns": {
+            
+          },
+          "nestedTextValueRuns": [
+            
+          ],
+          "stateMachines": {
+            "stateMachine1": {
+              "name": "State Machine 1",
+              "inputs": {
+                
+              }
+            }
+          }
+        },
+        "button": {
+          "name": "Button",
+          "animations": {
+            "buttonBase": "Button_Base",
+            "releasecoins": "ReleaseCoins",
+            "releasegems": "ReleaseGems",
+            "pressed": "Pressed",
+            "idle": "Idle",
+            "hitboxgems": "HitboxGems",
+            "hitboxcoins": "HitboxCoins",
+            "state2": "State_2",
+            "state1": "State_1"
+          },
+          "textValueRuns": {
+            
+          },
+          "nestedTextValueRuns": [
+            
+          ],
+          "stateMachines": {
+            "stateMachine1": {
+              "name": "State Machine 1",
+              "inputs": {
+                
+              }
+            }
+          }
+        },
+        "heart": {
+          "name": "Heart",
+          "animations": {
+            "down": "Down",
+            "top": "Top",
+            "right": "right",
+            "left": "Left",
+            "vertical": "Vertical",
+            "horizontal": "Horizontal"
+          },
+          "textValueRuns": {
+            
+          },
+          "nestedTextValueRuns": [
+            
+          ],
+          "stateMachines": {
+            "stateMachine1": {
+              "name": "State Machine 1",
+              "inputs": {
+                "vertical": {
+                  "name": "Vertical",
+                  "type": "number",
+                  "defaultValue": "50.000000"
+                },
+                "horizontal": {
+                  "name": "Horizontal",
+                  "type": "number",
+                  "defaultValue": "50.000000"
+                }
+              }
+            }
+          }
+        },
+        "item": {
+          "name": "Item",
+          "animations": {
+            "scale0": "Scale 0",
+            "scale100": "Scale 100",
+            "coin": "Coin",
+            "gem": "Gem",
+            "down": "Down",
+            "top": "Top",
+            "right": "right",
+            "left": "Left",
+            "vertical": "Vertical",
+            "horizontal": "Horizontal"
+          },
+          "textValueRuns": {
+            
+          },
+          "nestedTextValueRuns": [
+            
+          ],
+          "stateMachines": {
+            "stateMachine1": {
+              "name": "State Machine 1",
+              "inputs": {
+                "numscale": {
+                  "name": "numScale",
+                  "type": "number",
+                  "defaultValue": "100.000000"
+                },
+                "vertical": {
+                  "name": "Vertical",
+                  "type": "number",
+                  "defaultValue": "50.000000"
+                },
+                "horizontal": {
+                  "name": "Horizontal",
+                  "type": "number",
+                  "defaultValue": "50.000000"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "dbGenerator": {
+      "assets": {
+        
+      },
+      "enums": {
+        "pet": {
+          "name": "Pet",
+          "values": {
+            "snake": "Snake",
+            "cat": "Cat",
+            "dog": "Dog"
+          }
+        },
+      },
+      "viewModels": {
+        "pet": {
+          "name": "Pet",
+          "properties": {
+            "petType": {
+              "name": "pet_type",
+              "type": ""
+            },
+            "name": {
+              "name": "name",
+              "type": ""
+            },
+            "age": {
+              "name": "age",
+              "type": ""
+            }
+          }
+        },
+        "person": {
+          "name": "Person",
+          "properties": {
+            "myPet": {
+              "name": "my_pet",
+              "type": ""
+            },
+            "age": {
+              "name": "age",
+              "type": ""
+            },
+            "jump": {
+              "name": "jump",
+              "type": ""
+            },
+            "color": {
+              "name": "color",
+              "type": ""
+            },
+            "istall": {
+              "name": "isTall",
+              "type": ""
+            },
+            "name": {
+              "name": "name",
+              "type": ""
+            }
+          }
+        }
+      },
+      "artboards": {
+        "artboard": {
+          "name": "Artboard",
+          "animations": {
+            "timeline1": "Timeline 1"
+          },
+          "textValueRuns": {
+            
+          },
+          "nestedTextValueRuns": [
+            
+          ],
+          "stateMachines": {
+            "stateMachine1": {
+              "name": "State Machine 1",
+              "inputs": {
+                
+              }
+            }
+          }
+        }
+      }
+    },
     "rating": {
       "assets": {
+        
+      },
+      "enums": {
+        
+      },
+      "viewModels": {
         
       },
       "artboards": {
@@ -215,7 +656,13 @@
           "assetId": "2472778",
           "cdnUuid": "",
           "cdnBaseUrl": "https://public.rive.app/cdn/uuid"
-        }
+        },
+      },
+      "enums": {
+        
+      },
+      "viewModels": {
+        
       },
       "artboards": {
         "artboard": {
@@ -242,6 +689,12 @@
     },
     "littleMachine": {
       "assets": {
+        
+      },
+      "enums": {
+        
+      },
+      "viewModels": {
         
       },
       "artboards": {

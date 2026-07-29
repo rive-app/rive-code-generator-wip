@@ -1,5 +1,5 @@
 Rive Code Generator
-Usage: ../build/out/lib/release/rive_code_generator [OPTIONS]
+Usage: ../build/out/lib/debug/rive_code_generator [OPTIONS]
 
 Options:
   -h,--help                   Print this help message and exit
@@ -9,3 +9,6 @@ Options:
   -t,--template TEXT          Custom template file path
   -l,--language ENUM:value in {dart->0,js->1} OR {0,1}
                               Programming language for code generation
+  -e,--engine ENUM:value in {inja->1,mustache->0} OR {1,0}
+                              Template engine to use (mustache or inja)
+  --ignore-private            Skip artboards, animations, state machines, and properties starting with 'internal', 'private', or '_'

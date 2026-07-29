@@ -1,0 +1,87 @@
+{
+  "riveMeta": {
+    {% for file in riv_files -%}
+    "{{ file.riv_camel_case }}": {
+      "assets": {
+        {% for asset in file.assets -%}
+        "{{ asset.asset_camel_case }}": {
+          "name": "{{ asset.asset_name }}",
+          "type": "{{ asset.asset_type }}",
+          "assetId": "{{ asset.asset_id }}",
+          "cdnUuid": "{{ asset.asset_cdn_uuid }}",
+          "cdnBaseUrl": "{{ asset.asset_cdn_base_url }}"
+        }{% if not loop.is_last %},{% endif %}
+        {% endfor -%}
+      },
+      "enums": {
+        {% for enum in file.enums -%}
+        "{{ enum.enum_camel_case }}": {
+          "name": "{{ enum.enum_name }}",
+          "values": {
+            {% for ev in enum.enum_values -%}
+            "{{ ev.enum_value_camel_case }}": "{{ ev.enum_value_key }}"{% if not loop.is_last %},{% endif %}
+            {% endfor -%}
+          }
+        }{% if not loop.is_last %},{% endif %}
+        {% endfor -%}
+      },
+      "viewModels": {
+        {% for vm in file.view_models -%}
+        "{{ vm.view_model_camel_case }}": {
+          "name": "{{ vm.view_model_name }}",
+          "properties": {
+            {% for prop in vm.properties -%}
+            "{{ prop.property_camel_case }}": {
+              "name": "{{ prop.property_name }}",
+              "type": "{{ prop.property_type }}"
+            }{% if not loop.is_last %},{% endif %}
+            {% endfor -%}
+          }
+        }{% if not loop.is_last %},{% endif %}
+        {% endfor -%}
+      },
+      "artboards": {
+        {% for artboard in file.artboards -%}
+        "{{ artboard.artboard_camel_case }}": {
+          "name": "{{ artboard.artboard_name }}",
+          "animations": {
+            {% for anim in artboard.animations -%}
+            "{{ anim.animation_camel_case }}": "{{ anim.animation_name }}"{% if not loop.is_last %},{% endif %}
+            {% endfor -%}
+          },
+          "textValueRuns": {
+            {% for tvr in artboard.text_value_runs -%}
+            "{{ tvr.text_value_run_camel_case }}": "{{ tvr.text_value_run_default_sanitized }}"{% if not loop.is_last %},{% endif %}
+            {% endfor -%}
+          },
+          "nestedTextValueRuns": [
+            {% for ntvr in artboard.nested_text_value_runs -%}
+            {
+              "name": "{{ ntvr.nested_text_value_run_name }}",
+              "path": "{{ ntvr.nested_text_value_run_path }}"
+            }{% if not loop.is_last %},{% endif %}
+            {% endfor -%}
+          ],
+          "stateMachines": {
+            {% for sm in artboard.state_machines -%}
+            "{{ sm.state_machine_camel_case }}": {
+              "name": "{{ sm.state_machine_name }}",
+              "inputs": {
+                {% for input in sm.inputs -%}
+                "{{ input.input_camel_case }}": {
+                  "name": "{{ input.input_name }}",
+                  "type": "{{ input.input_type }}",
+                  "defaultValue": "{{ input.input_default_value }}"
+                }{% if not loop.is_last %},{% endif %}
+                {% endfor -%}
+              }
+            }{% if not loop.is_last %},{% endif %}
+            {% endfor -%}
+          }
+        }{% if not loop.is_last %},{% endif %}
+        {% endfor -%}
+      }
+    }{% if not loop.is_last %},{% endif %}
+    {% endfor -%}
+  }
+}

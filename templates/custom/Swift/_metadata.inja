@@ -1,0 +1,36 @@
+{% if file.has_metadata %}
+
+    // MARK: - MetaData
+
+    /// Metadata for {{ file.riv_camel_case }}.riv
+    public struct MetaData {
+
+        /// The Rive file name
+        public static let fileName = "{{ file.riv_original_file_name }}"
+        {% if file.has_multiple_artboards %}
+
+        // MARK: - Artboards
+
+        public enum Artboard: String, CaseIterable, Sendable {
+          {% for artboard in file.artboards %}
+            case {{ artboard.artboard_camel_case }} = "{{ artboard.artboard_name }}"
+          {% endfor %}
+
+            public var name: String {
+                switch self {
+                  {% for artboard in file.artboards %}
+                case .{{ artboard.artboard_camel_case }}: return "{{ artboard.artboard_name }}"
+                  {% endfor %}
+                }
+            }
+            {% include "_state_machines_metadata.inja" %}
+
+            public static let explicitDefault: Artboard = {% if file.default_artboard_camel_case %}.{{ file.default_artboard_camel_case }}{% else %}.default{% endif %}
+
+        }
+            {% include "_state_machines_enum.inja" %}
+
+        {% endif %}
+
+    }
+{% endif %}

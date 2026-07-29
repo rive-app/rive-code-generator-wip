@@ -1,0 +1,13 @@
+{% for file in riv_files %}
+{% include "templates/custom/Swift/_header.inja" %}
+
+{% include "templates/custom/Swift/_imports.inja" %}
+
+// MARK: - {{ file.riv_pascal_case }} ViewModel
+{% if length(file.view_models) > 0 %}
+{% include "templates/custom/Swift/_viewmodel_with_databinding.inja" %}
+{% else %}
+{% include "templates/custom/Swift/_viewmodel_no_databinding.inja" %}
+{% endif %}
+{% include "templates/custom/Swift/_type_safe_switching.inja" %}
+{% endfor %}

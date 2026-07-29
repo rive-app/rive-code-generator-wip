@@ -1,0 +1,66 @@
+{% for vm in file.view_models -%}
+    {% if loop.is_first -%}
+      {% set has_settable = false -%}
+      {% for prop in vm.properties -%}
+        {% if prop.property_type.is_boolean or prop.property_type.is_number or prop.property_type.is_string or prop.property_type.is_color or prop.property_type.is_enum -%}
+          {% set has_settable = true -%}
+        {% endif -%}
+      {% endfor -%}
+      {% if has_settable %}
+
+        public init(
+          {% for prop in vm.properties -%}
+            {% if prop.property_type.is_boolean %}
+            {{ prop.property_name }}: Bool? = nil{% if not loop.is_last %},{% endif %}
+
+            {% endif -%}
+            {% if prop.property_type.is_number %}
+            {{ prop.property_name }}: Float? = nil{% if not loop.is_last %},{% endif %}
+
+            {% endif -%}
+            {% if prop.property_type.is_string %}
+            {{ prop.property_name }}: String? = nil{% if not loop.is_last %},{% endif %}
+
+            {% endif -%}
+            {% if prop.property_type.is_color %}
+            {{ prop.property_name }}: UIColor? = nil{% if not loop.is_last %},{% endif %}
+
+            {% endif -%}
+            {% if prop.property_type.is_enum %}
+            {{ prop.property_name }}: {{ prop.property_type.backing_pascal_case }}Enum? = nil{% if not loop.is_last %},{% endif %}
+
+            {% endif -%}
+          {% endfor -%}
+        ) {
+            self.init()
+          {% for prop in vm.properties -%}
+            {% if prop.property_type.is_boolean %}
+            if let {{ prop.property_name }} {
+                self.{{ prop.property_name }} = {{ prop.property_name }}
+            }
+            {% endif -%}
+            {% if prop.property_type.is_number %}
+            if let {{ prop.property_name }} {
+                self.{{ prop.property_name }} = {{ prop.property_name }}
+            }
+            {% endif -%}
+            {% if prop.property_type.is_string %}
+            if let {{ prop.property_name }} {
+                self.{{ prop.property_name }} = {{ prop.property_name }}
+            }
+            {% endif -%}
+            {% if prop.property_type.is_color %}
+            if let {{ prop.property_name }} {
+                self.{{ prop.property_name }} = {{ prop.property_name }}
+            }
+            {% endif -%}
+            {% if prop.property_type.is_enum %}
+            if let {{ prop.property_name }} {
+                self.{{ prop.property_name }} = {{ prop.property_name }}
+            }
+            {% endif -%}
+          {% endfor -%}
+        }
+      {% endif -%}
+    {% endif -%}
+  {% endfor -%}

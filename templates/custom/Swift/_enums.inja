@@ -1,0 +1,16 @@
+{% if length(file.enums) > 0 %}
+
+        // MARK: - Enums
+        {% endif -%}
+        {% for enum in file.enums %}
+
+        public enum {{ enum.enum_pascal_case }}Enum: String, CaseIterable, Sendable {
+          {% for value in enum.enum_values %}
+            case {{ value.enum_value_camel_case }} = "{{ value.enum_value_key }}"
+          {% endfor %}
+
+            public var displayName: String {
+                return rawValue
+            }
+        }
+        {% endfor -%}

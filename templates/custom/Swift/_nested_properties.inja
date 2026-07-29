@@ -1,0 +1,37 @@
+{% for vm in file.view_models -%}
+          {% if not loop.is_first %}
+
+        // MARK: - {{ vm.view_model_pascal_case }} Nested Properties
+
+        public struct {{ vm.view_model_pascal_case }}Properties: RiveDataBindingProperties {
+
+            public init() {}
+            {% for prop in vm.properties -%}
+              {% if prop.property_type.is_boolean -%}
+            @BooleanProperty("{{ prop.property_name }}") public var {{ prop.property_name }}: Bool?
+              {% endif -%}
+              {% if prop.property_type.is_number -%}
+            @NumberProperty("{{ prop.property_name }}") public var {{ prop.property_name }}: Float?
+              {% endif -%}
+              {% if prop.property_type.is_string -%}
+            @StringProperty("{{ prop.property_name }}") public var {{ prop.property_name }}: String?
+              {% endif -%}
+              {% if prop.property_type.is_color -%}
+            @ColorProperty("{{ prop.property_name }}") public var {{ prop.property_name }}: UIColor?
+              {% endif -%}
+              {% if prop.property_type.is_enum -%}
+            @EnumProperty<{{ prop.property_type.backing_pascal_case }}Enum>("{{ prop.property_name }}") public var {{ prop.property_name }}: {{ prop.property_type.backing_pascal_case }}Enum?
+              {% endif -%}
+              {% if prop.property_type.is_trigger -%}
+            @TriggerProperty("{{ prop.property_name }}") public var {{ prop.property_name }}: TriggerProperty
+              {% endif -%}
+              {% if prop.property_type.is_image -%}
+            @ImageProperty("{{ prop.property_name }}") public var {{ prop.property_name }}: ImageProperty
+              {% endif -%}
+              {% if prop.property_type.is_view_model -%}
+            @ViewModelProperty<{{ prop.property_type.backing_pascal_case }}Properties>("{{ prop.property_name }}") public var {{ prop.property_name }}: ViewModelProperty<{{ prop.property_type.backing_pascal_case }}Properties>
+              {% endif -%}
+            {% endfor %}
+        }
+          {% endif -%}
+        {% endfor %}

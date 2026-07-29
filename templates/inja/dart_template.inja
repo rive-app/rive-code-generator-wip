@@ -1,0 +1,77 @@
+// {{ generated_file_name }}.dart
+
+// ignore_for_file: lines_longer_than_80_chars, unused_field
+
+// ignore: avoid_classes_with_only_static_members
+/// Main entry point for accessing Rive metadata.
+/// This class provides static getters for each Rive file's metadata.
+abstract class RiveMeta {
+  {% for file in riv_files -%}
+  /// Getter for the metadata of the {{ file.riv_camel_case }} Rive file.
+  static const _{{ file.riv_pascal_case }}File {{ file.riv_camel_case }} = _{{ file.riv_pascal_case }}File();
+
+  {% endfor -%}
+}
+
+{% for file in riv_files -%}
+// ----------------------
+// {{ file.riv_camel_case }} Rive file
+// ----------------------
+
+/// Metadata for the "{{ file.riv_camel_case }}" Rive file.
+class _{{ file.riv_pascal_case }}File {
+  const _{{ file.riv_pascal_case }}File();
+
+  _{{ file.riv_pascal_case }}Artboards get artboards => const _{{ file.riv_pascal_case }}Artboards();
+}
+
+/// Container for all artboards in the "{{ file.riv_camel_case }}" Rive file.
+class _{{ file.riv_pascal_case }}Artboards {
+  const _{{ file.riv_pascal_case }}Artboards();
+
+  {% for artboard in file.artboards -%}
+  _{{ file.riv_pascal_case }}Artboard{{ artboard.artboard_pascal_case }} get {{ artboard.artboard_camel_case }} => const _{{ file.riv_pascal_case }}Artboard{{ artboard.artboard_pascal_case }}();
+  {% endfor -%}
+}
+
+{% for artboard in file.artboards -%}
+/// Metadata for the "{{ artboard.artboard_camel_case }}" artboard.
+class _{{ file.riv_pascal_case }}Artboard{{ artboard.artboard_pascal_case }} {
+  const _{{ file.riv_pascal_case }}Artboard{{ artboard.artboard_pascal_case }}();
+
+  String get name => '{{ artboard.artboard_name }}';
+
+  _{{ file.riv_pascal_case }}{{ artboard.artboard_pascal_case }}Animations get animations => const _{{ file.riv_pascal_case }}{{ artboard.artboard_pascal_case }}Animations();
+  _{{ file.riv_pascal_case }}{{ artboard.artboard_pascal_case }}StateMachines get stateMachines => const _{{ file.riv_pascal_case }}{{ artboard.artboard_pascal_case }}StateMachines();
+}
+
+/// Container for animation names in the "{{ artboard.artboard_camel_case }}" artboard.
+class _{{ file.riv_pascal_case }}{{ artboard.artboard_pascal_case }}Animations {
+  const _{{ file.riv_pascal_case }}{{ artboard.artboard_pascal_case }}Animations();
+
+  {% for animation in artboard.animations -%}
+  String get {{ animation.animation_camel_case }} => '{{ animation.animation_name }}';
+  {% endfor -%}
+}
+
+/// Container for state machines in the "{{ artboard.artboard_camel_case }}" artboard.
+class _{{ file.riv_pascal_case }}{{ artboard.artboard_pascal_case }}StateMachines {
+  const _{{ file.riv_pascal_case }}{{ artboard.artboard_pascal_case }}StateMachines();
+
+  {% for sm in artboard.state_machines -%}
+  _{{ file.riv_pascal_case }}{{ artboard.artboard_pascal_case }}{{ sm.state_machine_camel_case }} get {{ sm.state_machine_camel_case }} => const _{{ file.riv_pascal_case }}{{ artboard.artboard_pascal_case }}{{ sm.state_machine_camel_case }}();
+  {% endfor -%}
+}
+
+{% for sm in artboard.state_machines -%}
+/// Metadata for the "{{ sm.state_machine_camel_case }}" state machine.
+class _{{ file.riv_pascal_case }}{{ artboard.artboard_pascal_case }}{{ sm.state_machine_camel_case }} {
+  const _{{ file.riv_pascal_case }}{{ artboard.artboard_pascal_case }}{{ sm.state_machine_camel_case }}();
+
+  String get name => '{{ sm.state_machine_name }}';
+}
+{% endfor -%}
+
+{% endfor -%}
+
+{% endfor -%}

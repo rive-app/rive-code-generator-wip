@@ -1,0 +1,26 @@
+
+/// View model for {{ file.riv_camel_case }}.riv (no data binding)
+@MainActor
+public final class Rive{{ file.riv_pascal_case }}ViewModel: RiveViewModel {
+{% include "_metadata.inja" %}
+    // MARK: - Initializer
+
+    public init(
+        autoPlay: Bool = false,
+        loadCdn: Bool = false,
+        fit: RiveFit = .contain,
+        alignment: RiveAlignment = .center,
+        bundle: Bundle? = nil
+    ) {
+        super.init(
+            configuration: .init(
+                fileName: "{{ file.riv_original_file_name }}",
+                autoPlay: autoPlay,
+                loadCdn: loadCdn,
+                fit: fit,
+                alignment: alignment,
+                bundle: bundle ?? .module
+            )
+        )
+    }
+}

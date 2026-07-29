@@ -1,0 +1,40 @@
+{% if file.has_type_safe_switching %}
+
+// MARK: - Type-Safe Switching
+
+public extension Rive{{ file.riv_pascal_case }}ViewModel {
+  {% if file.has_multiple_artboards %}
+
+    func switchArtboard(to artboard: MetaData.Artboard) throws {
+        try switchArtboard(to: artboard.name)
+    }
+  {% endif -%}
+  {% if file.has_multiple_state_machines %}
+    {% set needs_switch_function = false %}
+    {% for artboard in file.artboards %}
+      {% if length(artboard.state_machines) > 1 %}
+        {% set needs_switch_function = true %}
+      {% endif %}
+    {% endfor %}
+    {% if needs_switch_function %}
+
+    func switchStateMachine(to stateMachine: MetaData.Artboard.StateMachine) throws {
+        let name = stateMachine.name
+        {% if file.has_multiple_artboards -%}
+        let targetArtboard = stateMachine.artboard
+        {% endif -%}
+        {% if file.has_multiple_artboards %}
+        let currentArtboard = try getCurrentArtboardName()
+        if currentArtboard != targetArtboard.name {
+            try switchTo(artboard: targetArtboard.name, stateMachine: name)
+        } else {
+            try switchStateMachine(to: name)
+        }
+        {% else %}
+        try switchStateMachine(to: name)
+        {% endif -%}
+    }
+    {% endif %}
+  {% endif -%}
+}
+{% endif %}

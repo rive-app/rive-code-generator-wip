@@ -1,0 +1,36 @@
+
+/// View model for {{ file.riv_camel_case }}.riv with data binding support
+///
+/// **Usage:**
+/// ```swift SwiftUI
+/// @StateObject var viewModel = Rive{{ file.riv_pascal_case }}ViewModel()
+/// viewModel.properties.someProperty = value
+/// viewModel.play()
+/// ```
+/// ```swift UIKit
+/// let viewModel = Rive{{ file.riv_pascal_case }}ViewModel()
+/// viewModel.properties.someProperty = value
+/// viewModel.play()
+/// ```
+@MainActor
+public final class Rive{{ file.riv_pascal_case }}ViewModel: RiveViewModel {
+  {% include "_metadata.inja" %}
+  {% if not file.has_metadata %}
+
+  {% endif %}
+    // MARK: - Properties
+
+    public struct Properties: RiveDataBindingProperties {
+
+        public init() {}
+  {% include "_properties_init.inja" %}
+        {% include "_enums.inja" %}
+        {% include "_nested_properties.inja" %}
+
+        // MARK: - Main Properties
+        {% include "_main_properties.inja" %}
+    }
+
+    // MARK: - Initializer
+  {% include "_initializer_with_properties.inja" %}
+}

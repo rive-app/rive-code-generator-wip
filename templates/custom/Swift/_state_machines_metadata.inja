@@ -1,0 +1,18 @@
+{% if file.has_multiple_state_machines %}
+              {% set has_artboard_with_multiple_state_machines = false %}
+              {% for artboard in file.artboards %}
+                {% if length(artboard.state_machines) > 1 %}
+                  {% set has_artboard_with_multiple_state_machines = true %}
+                {% endif %}
+              {% endfor %}
+              {% if has_artboard_with_multiple_state_machines %}
+
+            public var stateMachines: [StateMachine] {
+                switch self {
+                  {% for artboard in file.artboards -%}
+                case .{{ artboard.artboard_camel_case }}: return [{% for sm in artboard.state_machines %}.{{ artboard.artboard_camel_case }}_{{ sm.state_machine_camel_case }}{% if not loop.is_last %}, {% endif %}{% endfor %}]
+                  {% endfor -%}
+                }
+            }
+              {% endif %}
+            {% endif %}

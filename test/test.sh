@@ -16,8 +16,15 @@ else
     HYPERLINK_START="" HYPERLINK_END=""
 fi
 
-# Define the command as a reusable variable
-RIVE_GENERATOR="../build/out/lib/release/rive_code_generator"
+# Define the command as a reusable variable - check for release build first, then debug
+if [[ -f "../build/out/lib/release/rive_code_generator" ]]; then
+    RIVE_GENERATOR="../build/out/lib/release/rive_code_generator"
+elif [[ -f "../build/out/lib/debug/rive_code_generator" ]]; then
+    RIVE_GENERATOR="../build/out/lib/debug/rive_code_generator"
+else
+    echo "${RED}Error: rive_code_generator not found in release or debug builds${RESET}"
+    exit 1
+fi
 
 # Add a new variable for the update flag
 UPDATE_EXPECTED=false
@@ -95,10 +102,23 @@ parse_args "$@"
 run_test "Help" "$RIVE_GENERATOR --help" "expected/help.txt"
 
 # Generate correct JSON output for all .riv files
-run_test "All JSON" "$RIVE_GENERATOR -i ../samples/ -t ../templates/json_template.mustache" "expected/all.json" "output/all.json"
+run_test "All JSON" "$RIVE_GENERATOR -i ../samples/ -t ../templates/mustache/json_template.mustache" "expected/all.json" "output/all.json"
 
 # Generate correct Dart output for a single .riv file
-run_test "Rating Dart" "$RIVE_GENERATOR -i ../samples/rating.riv -t ../templates/dart_template.mustache" "expected/rating.dart" "output/rating.dart"
+run_test "Rating Dart" "$RIVE_GENERATOR -i ../samples/rating.riv -t ../templates/mustache/dart_template.mustache" "expected/rating.dart" "output/rating.dart"
+
+# Generate correct Swift output using Inja template for all .riv files
+# Note: Run from repo root directory so includes in swift_example.inja resolve correctly
+run_test "All Swift Inja" "cd .. && $RIVE_GENERATOR -i samples/ -t templates/custom/Swift/swift_example.inja -e inja" "expected/all.swift" "test/output/all.swift"
+
+# Generate correct Swift output using Inja template for a single .riv file
+run_test "Rating Swift Inja" "cd .. && $RIVE_GENERATOR -i samples/rating.riv -t templates/custom/Swift/swift_example.inja -e inja" "expected/rating.swift" "test/output/rating.swift"
+
+# Generate correct JSON output using Inja template for all .riv files
+run_test "All JSON Inja" "$RIVE_GENERATOR -i ../samples/ -t ../templates/inja/json_template.inja -e inja" "expected/all_inja.json" "output/all_inja.json"
+
+# Generate correct Dart output using Inja template for a single .riv file
+run_test "Rating Dart Inja" "$RIVE_GENERATOR -i ../samples/rating.riv -t ../templates/inja/dart_template.inja -e inja" "expected/rating_inja.dart" "output/rating_inja.dart"
 #endregion
 
 # Exit with an error if any test failed

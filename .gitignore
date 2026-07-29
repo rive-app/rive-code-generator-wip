@@ -11,3 +11,5 @@ test/output/
 
 # ci
 .github/scripts/release/node_modules/
+out
+.claude

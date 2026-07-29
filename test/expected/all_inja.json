@@ -1,0 +1,510 @@
+{
+  "riveMeta": {
+"textRuns": {
+      "assets": {
+"inter": {
+          "name": "Inter",
+          "type": "font",
+          "assetId": "594377",
+          "cdnUuid": "",
+          "cdnBaseUrl": "https://public.rive.app/cdn/uuid"
+        }},
+      "enums": {
+},
+      "viewModels": {
+},
+      "artboards": {
+"artboardNr1": {
+          "name": "Artboard-Nr1",
+          "animations": {
+"timeline1": "Timeline 1"},
+          "textValueRuns": {
+"name": "gordon","surname": "hayes","run1": "Text run 1","run2": "Text run 2\n"},
+          "nestedTextValueRuns": [
+],
+          "stateMachines": {
+"stateMachine1": {
+              "name": "State Machine 1",
+              "inputs": {
+}
+            }}
+        },"artboardNr2": {
+          "name": "Artboard-Nr2",
+          "animations": {
+"timeline1": "Timeline 1"},
+          "textValueRuns": {
+"arboard2Unique": "Artboard 2 unique value","name": "gordon","surname": "hayes","run1": "Text run 1","run2": "Text run 2\n"},
+          "nestedTextValueRuns": [
+],
+          "stateMachines": {
+"stateMachine1": {
+              "name": "State Machine 1",
+              "inputs": {
+}
+            }}
+        }}
+    },"nestedText": {
+      "assets": {
+"inter": {
+          "name": "Inter",
+          "type": "font",
+          "assetId": "594377",
+          "cdnUuid": "",
+          "cdnBaseUrl": "https://public.rive.app/cdn/uuid"
+        }},
+      "enums": {
+},
+      "viewModels": {
+},
+      "artboards": {
+"artboard1": {
+          "name": "Artboard1",
+          "animations": {
+"timeline1": "Timeline 1"},
+          "textValueRuns": {
+"artboard1Textrun": "Text on artboard 1"},
+          "nestedTextValueRuns": [
+{
+              "name": "Artboard2-TextRun",
+              "path": "NestedArtboard2"
+            },{
+              "name": "Artboard3-TextRun",
+              "path": "NestedArtboard2/NestedArtboard3"
+            }],
+          "stateMachines": {
+"stateMachine1": {
+              "name": "State Machine 1",
+              "inputs": {
+}
+            }}
+        },"artboarddonotfind": {
+          "name": "ArtboardDoNotFind",
+          "animations": {
+"timeline1": "Timeline 1"},
+          "textValueRuns": {
+},
+          "nestedTextValueRuns": [
+],
+          "stateMachines": {
+"stateMachine1": {
+              "name": "State Machine 1",
+              "inputs": {
+}
+            }}
+        },"artboard3": {
+          "name": "Artboard3",
+          "animations": {
+"timeline1": "Timeline 1"},
+          "textValueRuns": {
+"artboard3Textrun": "Text on artboard 3"},
+          "nestedTextValueRuns": [
+],
+          "stateMachines": {
+"stateMachine1": {
+              "name": "State Machine 1",
+              "inputs": {
+}
+            }}
+        },"artboard2": {
+          "name": "Artboard2",
+          "animations": {
+"timeline1": "Timeline 1"},
+          "textValueRuns": {
+"artboard2Textrun": "Text on artboard 2"},
+          "nestedTextValueRuns": [
+{
+              "name": "Artboard3-TextRun",
+              "path": "NestedArtboard3"
+            }],
+          "stateMachines": {
+"stateMachine1": {
+              "name": "State Machine 1",
+              "inputs": {
+}
+            }}
+        }}
+    },"rewards": {
+      "assets": {
+"mochiyPopOne": {
+          "name": "Mochiy Pop One",
+          "type": "font",
+          "assetId": "37631",
+          "cdnUuid": "",
+          "cdnBaseUrl": "https://public.rive.app/cdn/uuid"
+        },"doHyeon": {
+          "name": "Do Hyeon",
+          "type": "font",
+          "assetId": "36489",
+          "cdnUuid": "",
+          "cdnBaseUrl": "https://public.rive.app/cdn/uuid"
+        },"oxanium": {
+          "name": "Oxanium",
+          "type": "font",
+          "assetId": "38140",
+          "cdnUuid": "",
+          "cdnBaseUrl": "https://public.rive.app/cdn/uuid"
+        }},
+      "enums": {
+"itemSelection": {
+          "name": "Item_Selection",
+          "values": {
+"coin": "Coin","gem": "Gem"}
+        }},
+      "viewModels": {
+"itemIconValue": {
+          "name": "Item_Icon_Value",
+          "properties": {
+"iconReact": {
+              "name": "Icon_React",
+              "type": "{"backing_camel_case":"X","backing_kebab_case":"X","backing_name":"","backing_pascal_case":"X","backing_snake_case":"X","is_boolean":false,"is_color":false,"is_enum":false,"is_image":false,"is_integer":false,"is_list":false,"is_number":false,"is_string":false,"is_trigger":true,"is_view_model":false}"
+            },"propertyOfItem": {
+              "name": "Property_Of_Item",
+              "type": "{"backing_camel_case":"item","backing_kebab_case":"item","backing_name":"Item","backing_pascal_case":"Item","backing_snake_case":"item","is_boolean":false,"is_color":false,"is_enum":false,"is_image":false,"is_integer":false,"is_list":false,"is_number":false,"is_string":false,"is_trigger":false,"is_view_model":true}"
+            },"itemValue": {
+              "name": "Item_Value",
+              "type": "{"backing_camel_case":"X","backing_kebab_case":"X","backing_name":"","backing_pascal_case":"X","backing_snake_case":"X","default_value":"0.000000","is_boolean":false,"is_color":false,"is_enum":false,"is_image":false,"is_integer":false,"is_list":false,"is_number":true,"is_string":false,"is_trigger":false,"is_view_model":false}"
+            }}
+        },"energyBar": {
+          "name": "Energy_Bar",
+          "properties": {
+"barColor": {
+              "name": "Bar_Color",
+              "type": "{"backing_camel_case":"X","backing_kebab_case":"X","backing_name":"","backing_pascal_case":"X","backing_snake_case":"X","default_value":"0xFF000000","is_boolean":false,"is_color":true,"is_enum":false,"is_image":false,"is_integer":false,"is_list":false,"is_number":false,"is_string":false,"is_trigger":false,"is_view_model":false}"
+            },"lives": {
+              "name": "Lives",
+              "type": "{"backing_camel_case":"X","backing_kebab_case":"X","backing_name":"","backing_pascal_case":"X","backing_snake_case":"X","default_value":"0.000000","is_boolean":false,"is_color":false,"is_enum":false,"is_image":false,"is_integer":false,"is_list":false,"is_number":true,"is_string":false,"is_trigger":false,"is_view_model":false}"
+            },"energyBar": {
+              "name": "Energy_Bar",
+              "type": "{"backing_camel_case":"X","backing_kebab_case":"X","backing_name":"","backing_pascal_case":"X","backing_snake_case":"X","default_value":"0.000000","is_boolean":false,"is_color":false,"is_enum":false,"is_image":false,"is_integer":false,"is_list":false,"is_number":true,"is_string":false,"is_trigger":false,"is_view_model":false}"
+            }}
+        },"rewards": {
+          "name": "Rewards",
+          "properties": {
+"priceValue": {
+              "name": "Price_Value",
+              "type": "{"backing_camel_case":"X","backing_kebab_case":"X","backing_name":"","backing_pascal_case":"X","backing_snake_case":"X","default_value":"0.000000","is_boolean":false,"is_color":false,"is_enum":false,"is_image":false,"is_integer":false,"is_list":false,"is_number":true,"is_string":false,"is_trigger":false,"is_view_model":false}"
+            },"color": {
+              "name": "Color",
+              "type": "{"backing_camel_case":"X","backing_kebab_case":"X","backing_name":"","backing_pascal_case":"X","backing_snake_case":"X","default_value":"0xFF000000","is_boolean":false,"is_color":true,"is_enum":false,"is_image":false,"is_integer":false,"is_list":false,"is_number":false,"is_string":false,"is_trigger":false,"is_view_model":false}"
+            },"height": {
+              "name": "Height",
+              "type": "{"backing_camel_case":"X","backing_kebab_case":"X","backing_name":"","backing_pascal_case":"X","backing_snake_case":"X","default_value":"0.000000","is_boolean":false,"is_color":false,"is_enum":false,"is_image":false,"is_integer":false,"is_list":false,"is_number":true,"is_string":false,"is_trigger":false,"is_view_model":false}"
+            },"withValue": {
+              "name": "With",
+              "type": "{"backing_camel_case":"X","backing_kebab_case":"X","backing_name":"","backing_pascal_case":"X","backing_snake_case":"X","default_value":"0.000000","is_boolean":false,"is_color":false,"is_enum":false,"is_image":false,"is_integer":false,"is_list":false,"is_number":true,"is_string":false,"is_trigger":false,"is_view_model":false}"
+            },"itemSelection": {
+              "name": "Item_Selection",
+              "type": "{"backing_camel_case":"item","backing_kebab_case":"item","backing_name":"Item","backing_pascal_case":"Item","backing_snake_case":"item","is_boolean":false,"is_color":false,"is_enum":false,"is_image":false,"is_integer":false,"is_list":false,"is_number":false,"is_string":false,"is_trigger":false,"is_view_model":true}"
+            },"itemValueIcon": {
+              "name": "Item_Value_Icon",
+              "type": "{"backing_camel_case":"itemIconValue","backing_kebab_case":"item-icon-value","backing_name":"Item_Icon_Value","backing_pascal_case":"ItemIconValue","backing_snake_case":"item_icon_value","is_boolean":false,"is_color":false,"is_enum":false,"is_image":false,"is_integer":false,"is_list":false,"is_number":false,"is_string":false,"is_trigger":false,"is_view_model":true}"
+            },"button": {
+              "name": "Button",
+              "type": "{"backing_camel_case":"button","backing_kebab_case":"button","backing_name":"Button","backing_pascal_case":"Button","backing_snake_case":"button","is_boolean":false,"is_color":false,"is_enum":false,"is_image":false,"is_integer":false,"is_list":false,"is_number":false,"is_string":false,"is_trigger":false,"is_view_model":true}"
+            },"coin": {
+              "name": "Coin",
+              "type": "{"backing_camel_case":"itemIconValue","backing_kebab_case":"item-icon-value","backing_name":"Item_Icon_Value","backing_pascal_case":"ItemIconValue","backing_snake_case":"item_icon_value","is_boolean":false,"is_color":false,"is_enum":false,"is_image":false,"is_integer":false,"is_list":false,"is_number":false,"is_string":false,"is_trigger":false,"is_view_model":true}"
+            },"gem": {
+              "name": "Gem",
+              "type": "{"backing_camel_case":"itemIconValue","backing_kebab_case":"item-icon-value","backing_name":"Item_Icon_Value","backing_pascal_case":"ItemIconValue","backing_snake_case":"item_icon_value","is_boolean":false,"is_color":false,"is_enum":false,"is_image":false,"is_integer":false,"is_list":false,"is_number":false,"is_string":false,"is_trigger":false,"is_view_model":true}"
+            },"energyBar": {
+              "name": "Energy_Bar",
+              "type": "{"backing_camel_case":"energyBar","backing_kebab_case":"energy-bar","backing_name":"Energy_Bar","backing_pascal_case":"EnergyBar","backing_snake_case":"energy_bar","is_boolean":false,"is_color":false,"is_enum":false,"is_image":false,"is_integer":false,"is_list":false,"is_number":false,"is_string":false,"is_trigger":false,"is_view_model":true}"
+            }}
+        },"button": {
+          "name": "Button",
+          "properties": {
+"state1": {
+              "name": "State_1",
+              "type": "{"backing_camel_case":"X","backing_kebab_case":"X","backing_name":"","backing_pascal_case":"X","backing_snake_case":"X","is_boolean":false,"is_color":false,"is_enum":false,"is_image":false,"is_integer":false,"is_list":false,"is_number":false,"is_string":true,"is_trigger":false,"is_view_model":false}"
+            },"itemText": {
+              "name": "Item_Text",
+              "type": "{"backing_camel_case":"X","backing_kebab_case":"X","backing_name":"","backing_pascal_case":"X","backing_snake_case":"X","is_boolean":false,"is_color":false,"is_enum":false,"is_image":false,"is_integer":false,"is_list":false,"is_number":false,"is_string":true,"is_trigger":false,"is_view_model":false}"
+            },"item": {
+              "name": "Item",
+              "type": "{"backing_camel_case":"item","backing_kebab_case":"item","backing_name":"Item","backing_pascal_case":"Item","backing_snake_case":"item","is_boolean":false,"is_color":false,"is_enum":false,"is_image":false,"is_integer":false,"is_list":false,"is_number":false,"is_string":false,"is_trigger":false,"is_view_model":true}"
+            },"pressed": {
+              "name": "Pressed",
+              "type": "{"backing_camel_case":"X","backing_kebab_case":"X","backing_name":"","backing_pascal_case":"X","backing_snake_case":"X","is_boolean":false,"is_color":false,"is_enum":false,"is_image":false,"is_integer":false,"is_list":false,"is_number":false,"is_string":false,"is_trigger":true,"is_view_model":false}"
+            }}
+        },"item": {
+          "name": "Item",
+          "properties": {
+"itemSelection": {
+              "name": "Item_Selection",
+              "type": "{"backing_camel_case":"itemSelection","backing_kebab_case":"item-selection","backing_name":"Item_Selection","backing_pascal_case":"ItemSelection","backing_snake_case":"item_selection","default_value":"Coin","enum_default_value":"Coin","enum_default_value_camel":"coin","is_boolean":false,"is_color":false,"is_enum":true,"is_image":false,"is_integer":false,"is_list":false,"is_number":false,"is_string":false,"is_trigger":false,"is_view_model":false}"
+            }}
+        }},
+      "artboards": {
+"main": {
+          "name": "Main",
+          "animations": {
+"timeline1": "Timeline 1"},
+          "textValueRuns": {
+},
+          "nestedTextValueRuns": [
+],
+          "stateMachines": {
+"stateMachine1": {
+              "name": "State Machine 1",
+              "inputs": {
+}
+            }}
+        },"lives2": {
+          "name": "Lives 2",
+          "animations": {
+"timeline1": "Timeline 1"},
+          "textValueRuns": {
+},
+          "nestedTextValueRuns": [
+],
+          "stateMachines": {
+"stateMachine1": {
+              "name": "State Machine 1",
+              "inputs": {
+}
+            }}
+        },"itemValue": {
+          "name": "Item Value",
+          "animations": {
+"jump": "jump","idle": "Idle"},
+          "textValueRuns": {
+},
+          "nestedTextValueRuns": [
+],
+          "stateMachines": {
+"stateMachine1": {
+              "name": "State Machine 1",
+              "inputs": {
+}
+            }}
+        },"chest": {
+          "name": "Chest",
+          "animations": {
+"coin": "Coin","gem": "Gem","itemsMove": "Items_Move","itemsIdle": "Items_Idle","open": "Open","idle": "Idle"},
+          "textValueRuns": {
+},
+          "nestedTextValueRuns": [
+],
+          "stateMachines": {
+"stateMachine1": {
+              "name": "State Machine 1",
+              "inputs": {
+}
+            }}
+        },"button": {
+          "name": "Button",
+          "animations": {
+"buttonBase": "Button_Base","releasecoins": "ReleaseCoins","releasegems": "ReleaseGems","pressed": "Pressed","idle": "Idle","hitboxgems": "HitboxGems","hitboxcoins": "HitboxCoins","state2": "State_2","state1": "State_1"},
+          "textValueRuns": {
+},
+          "nestedTextValueRuns": [
+],
+          "stateMachines": {
+"stateMachine1": {
+              "name": "State Machine 1",
+              "inputs": {
+}
+            }}
+        },"heart": {
+          "name": "Heart",
+          "animations": {
+"down": "Down","top": "Top","right": "right","left": "Left","vertical": "Vertical","horizontal": "Horizontal"},
+          "textValueRuns": {
+},
+          "nestedTextValueRuns": [
+],
+          "stateMachines": {
+"stateMachine1": {
+              "name": "State Machine 1",
+              "inputs": {
+"vertical": {
+                  "name": "Vertical",
+                  "type": "number",
+                  "defaultValue": "50.000000"
+                },"horizontal": {
+                  "name": "Horizontal",
+                  "type": "number",
+                  "defaultValue": "50.000000"
+                }}
+            }}
+        },"item": {
+          "name": "Item",
+          "animations": {
+"scale0": "Scale 0","scale100": "Scale 100","coin": "Coin","gem": "Gem","down": "Down","top": "Top","right": "right","left": "Left","vertical": "Vertical","horizontal": "Horizontal"},
+          "textValueRuns": {
+},
+          "nestedTextValueRuns": [
+],
+          "stateMachines": {
+"stateMachine1": {
+              "name": "State Machine 1",
+              "inputs": {
+"numscale": {
+                  "name": "numScale",
+                  "type": "number",
+                  "defaultValue": "100.000000"
+                },"vertical": {
+                  "name": "Vertical",
+                  "type": "number",
+                  "defaultValue": "50.000000"
+                },"horizontal": {
+                  "name": "Horizontal",
+                  "type": "number",
+                  "defaultValue": "50.000000"
+                }}
+            }}
+        }}
+    },"dbGenerator": {
+      "assets": {
+},
+      "enums": {
+"pet": {
+          "name": "Pet",
+          "values": {
+"snake": "Snake","cat": "Cat","dog": "Dog"}
+        }},
+      "viewModels": {
+"pet": {
+          "name": "Pet",
+          "properties": {
+"petType": {
+              "name": "pet_type",
+              "type": "{"backing_camel_case":"pet","backing_kebab_case":"pet","backing_name":"Pet","backing_pascal_case":"Pet","backing_snake_case":"pet","default_value":"Snake","enum_default_value":"Snake","enum_default_value_camel":"snake","is_boolean":false,"is_color":false,"is_enum":true,"is_image":false,"is_integer":false,"is_list":false,"is_number":false,"is_string":false,"is_trigger":false,"is_view_model":false}"
+            },"name": {
+              "name": "name",
+              "type": "{"backing_camel_case":"X","backing_kebab_case":"X","backing_name":"","backing_pascal_case":"X","backing_snake_case":"X","is_boolean":false,"is_color":false,"is_enum":false,"is_image":false,"is_integer":false,"is_list":false,"is_number":false,"is_string":true,"is_trigger":false,"is_view_model":false}"
+            },"age": {
+              "name": "age",
+              "type": "{"backing_camel_case":"X","backing_kebab_case":"X","backing_name":"","backing_pascal_case":"X","backing_snake_case":"X","default_value":"0.000000","is_boolean":false,"is_color":false,"is_enum":false,"is_image":false,"is_integer":false,"is_list":false,"is_number":true,"is_string":false,"is_trigger":false,"is_view_model":false}"
+            }}
+        },"person": {
+          "name": "Person",
+          "properties": {
+"myPet": {
+              "name": "my_pet",
+              "type": "{"backing_camel_case":"pet","backing_kebab_case":"pet","backing_name":"Pet","backing_pascal_case":"Pet","backing_snake_case":"pet","is_boolean":false,"is_color":false,"is_enum":false,"is_image":false,"is_integer":false,"is_list":false,"is_number":false,"is_string":false,"is_trigger":false,"is_view_model":true}"
+            },"age": {
+              "name": "age",
+              "type": "{"backing_camel_case":"X","backing_kebab_case":"X","backing_name":"","backing_pascal_case":"X","backing_snake_case":"X","default_value":"0.000000","is_boolean":false,"is_color":false,"is_enum":false,"is_image":false,"is_integer":false,"is_list":false,"is_number":true,"is_string":false,"is_trigger":false,"is_view_model":false}"
+            },"jump": {
+              "name": "jump",
+              "type": "{"backing_camel_case":"X","backing_kebab_case":"X","backing_name":"","backing_pascal_case":"X","backing_snake_case":"X","is_boolean":false,"is_color":false,"is_enum":false,"is_image":false,"is_integer":false,"is_list":false,"is_number":false,"is_string":false,"is_trigger":true,"is_view_model":false}"
+            },"color": {
+              "name": "color",
+              "type": "{"backing_camel_case":"X","backing_kebab_case":"X","backing_name":"","backing_pascal_case":"X","backing_snake_case":"X","default_value":"0xFF000000","is_boolean":false,"is_color":true,"is_enum":false,"is_image":false,"is_integer":false,"is_list":false,"is_number":false,"is_string":false,"is_trigger":false,"is_view_model":false}"
+            },"istall": {
+              "name": "isTall",
+              "type": "{"backing_camel_case":"X","backing_kebab_case":"X","backing_name":"","backing_pascal_case":"X","backing_snake_case":"X","default_value":"false","is_boolean":true,"is_color":false,"is_enum":false,"is_image":false,"is_integer":false,"is_list":false,"is_number":false,"is_string":false,"is_trigger":false,"is_view_model":false}"
+            },"name": {
+              "name": "name",
+              "type": "{"backing_camel_case":"X","backing_kebab_case":"X","backing_name":"","backing_pascal_case":"X","backing_snake_case":"X","is_boolean":false,"is_color":false,"is_enum":false,"is_image":false,"is_integer":false,"is_list":false,"is_number":false,"is_string":true,"is_trigger":false,"is_view_model":false}"
+            }}
+        }},
+      "artboards": {
+"artboard": {
+          "name": "Artboard",
+          "animations": {
+"timeline1": "Timeline 1"},
+          "textValueRuns": {
+},
+          "nestedTextValueRuns": [
+],
+          "stateMachines": {
+"stateMachine1": {
+              "name": "State Machine 1",
+              "inputs": {
+}
+            }}
+        }}
+    },"rating": {
+      "assets": {
+},
+      "enums": {
+},
+      "viewModels": {
+},
+      "artboards": {
+"complete": {
+          "name": "Complete",
+          "animations": {
+"thumbnail": "Thumbnail","n5Stars": "5_stars","n4Stars": "4_stars","n3Stars": "3_stars","n2Stars": "2_stars","n1Star": "1_star","idleEmpty": "Idle_empty"},
+          "textValueRuns": {
+},
+          "nestedTextValueRuns": [
+],
+          "stateMachines": {
+"stateMachine1": {
+              "name": "State Machine 1",
+              "inputs": {
+"rating": {
+                  "name": "Rating",
+                  "type": "number",
+                  "defaultValue": "0.000000"
+                }}
+            }}
+        }}
+    },"fileAssets": {
+      "assets": {
+"inter": {
+          "name": "Inter",
+          "type": "font",
+          "assetId": "594377",
+          "cdnUuid": "",
+          "cdnBaseUrl": "https://public.rive.app/cdn/uuid"
+        },"customImage": {
+          "name": "custom_image",
+          "type": "image",
+          "assetId": "2472778",
+          "cdnUuid": "",
+          "cdnBaseUrl": "https://public.rive.app/cdn/uuid"
+        }},
+      "enums": {
+},
+      "viewModels": {
+},
+      "artboards": {
+"artboard": {
+          "name": "Artboard",
+          "animations": {
+"timeline1": "Timeline 1"},
+          "textValueRuns": {
+},
+          "nestedTextValueRuns": [
+],
+          "stateMachines": {
+"stateMachine1": {
+              "name": "State Machine 1",
+              "inputs": {
+}
+            }}
+        }}
+    },"littleMachine": {
+      "assets": {
+},
+      "enums": {
+},
+      "viewModels": {
+},
+      "artboards": {
+"newArtboard": {
+          "name": "New Artboard",
+          "animations": {
+"idleLight": "Idle light","idle": "Idle","work": "Work","insertData": "Insert_data"},
+          "textValueRuns": {
+},
+          "nestedTextValueRuns": [
+],
+          "stateMachines": {
+"stateMachine1": {
+              "name": "State Machine 1",
+              "inputs": {
+"trigger1": {
+                  "name": "Trigger 1",
+                  "type": "trigger",
+                  "defaultValue": "false"
+                }}
+            }}
+        }}
+    }}
+}

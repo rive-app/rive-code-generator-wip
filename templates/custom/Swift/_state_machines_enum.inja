@@ -1,0 +1,40 @@
+{% if file.has_multiple_state_machines %}
+              {% set has_artboard_with_multiple_state_machines = false %}
+              {% for artboard in file.artboards %}
+                {% if length(artboard.state_machines) > 1 %}
+                  {% set has_artboard_with_multiple_state_machines = true %}
+                {% endif %}
+              {% endfor %}
+              {% if has_artboard_with_multiple_state_machines %}
+
+            // MARK: - State Machines
+
+            public enum StateMachine: String, CaseIterable, Sendable {
+              {% for artboard in file.artboards -%}
+                {% for sm in artboard.state_machines -%}
+                case {{ artboard.artboard_camel_case }}_{{ sm.state_machine_camel_case }}
+                {% endfor -%}
+              {% endfor %}
+
+                public var name: String {
+                    switch self {
+                      {% for artboard in file.artboards -%}
+                        {% for sm in artboard.state_machines -%}
+                    case .{{ artboard.artboard_camel_case }}_{{ sm.state_machine_camel_case }}: return "{{ sm.state_machine_name }}"
+                        {% endfor -%}
+                      {% endfor -%}
+                    }
+                }
+
+                public var artboard: Artboard {
+                    switch self {
+                      {% for artboard in file.artboards -%}
+                        {% for sm in artboard.state_machines -%}
+                    case .{{ artboard.artboard_camel_case }}_{{ sm.state_machine_camel_case }}: return .{{ artboard.artboard_camel_case }}
+                        {% endfor -%}
+                      {% endfor -%}
+                    }
+                }
+            }
+              {% endif %}
+            {% endif %}
