@@ -355,23 +355,26 @@ getStateMachinesFromArtboard(rive::ArtboardInstance* artboard)
     return stateMachines;
 }
 
-static std::vector<std::string> findRiveFiles(const std::string& path)
+static std::vector<std::string> findRiveFiles(const std::vector<std::string>& paths)
 {
     std::vector<std::string> riveFile;
 
-    if (std::filesystem::is_directory(path))
+    for (const auto& path : paths)
     {
-        for (const auto& entry : std::filesystem::directory_iterator(path))
+        if (std::filesystem::is_directory(path))
         {
-            if (entry.path().extension() == ".riv")
+            for (const auto& entry : std::filesystem::directory_iterator(path))
             {
-                riveFile.push_back(entry.path().string());
+                if (entry.path().extension() == ".riv")
+                {
+                    riveFile.push_back(entry.path().string());
+                }
             }
         }
-    }
-    else if (std::filesystem::path(path).extension() == ".riv")
-    {
-        riveFile.push_back(path);
+        else if (std::filesystem::path(path).extension() == ".riv")
+        {
+            riveFile.push_back(path);
+        }
     }
 
     return riveFile;
@@ -687,13 +690,13 @@ int main(int argc, char* argv[])
 {
     CLI::App app{"Rive Code Generator"};
 
-    std::string inputPath;
+    std::vector<std::string> inputPaths;
     std::string outputFilePath;
     std::string templatePath;
     Language language = Language::Dart; // Default to Dart
 
     app.add_option("-i, --input",
-                   inputPath,
+                   inputPaths,
                    "Path to Rive file or directory containing Rive files")
         ->required()
         ->check(CLI::ExistingFile | CLI::ExistingDirectory);
@@ -745,7 +748,7 @@ int main(int argc, char* argv[])
         }
     }
 
-    std::vector<std::string> riveFiles = findRiveFiles(inputPath);
+    std::vector<std::string> riveFiles = findRiveFiles(inputPaths);
 
     if (riveFiles.empty())
     {
