@@ -83,6 +83,7 @@ The tool uses [Mustache](https://mustache.github.io/) templating. Please refer t
 
 For each Rive file `{{#riv_files}}`, the following variables are available:
 
+- `{{riv_name}}`: The Rive file name
 - `{{riv_pascal_case}}`: The Rive file name in PascalCase
 - `{{riv_camel_case}}`: The Rive file name in camelCase
 - `{{riv_snake_case}}`: The Rive file name in snake_case
@@ -173,6 +174,7 @@ For each Rive file `{{#riv_files}}`, the following variables are available:
       - `{{property_kebab_case}}`: Name of the property in kebab-case
       - `{{property_type}}`: Type information for the property
       - For property type `{{#property_type}}`:
+        - `{{type_name}}`: Name of the type
         - `{{is_view_model}}`: Whether the property is a view model
         - `{{is_enum}}`: Whether the property is an enum
         - `{{is_string}}`: Whether the property is a string

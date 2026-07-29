@@ -110,6 +110,7 @@ struct ArtboardData
 
 struct RiveFileData
 {
+    std::string rivName;
     std::string rivPascalCase;
     std::string rivCameCase;
     std::string riveSnakeCase;
@@ -558,6 +559,7 @@ static std::optional<RiveFileData> processRiveFile(const std::string& riveFilePa
     std::string fileNameWithoutExtension = path.stem().string();
     std::vector<AssetInfo> assets = getAssetsFromFile(riveFile.get());
     RiveFileData fileData;
+    fileData.rivName = fileNameWithoutExtension;
     fileData.rivPascalCase = toPascalCase(fileNameWithoutExtension);
     fileData.rivCameCase = toCamelCase(fileNameWithoutExtension);
     fileData.riveSnakeCase = toSnakeCase(fileNameWithoutExtension);
@@ -773,6 +775,7 @@ int main(int argc, char* argv[])
     {
         const auto& fileData = riveFileDataList[fileIndex];
         kainjow::mustache::data riveFileData;
+        riveFileData["riv_name"] = fileData.rivName;
         riveFileData["riv_pascal_case"] = fileData.rivPascalCase;
         riveFileData["riv_camel_case"] = fileData.rivCameCase;
         riveFileData["riv_snake_case"] = fileData.riveSnakeCase;
@@ -848,10 +851,10 @@ int main(int argc, char* argv[])
                     toSnakeCase(property.name);
                 propertyData["property_kebab_case"] =
                     toKebabCase(property.name);
-                propertyData["property_type"] = property.type;
 
                 // Add property type information for the viewmodel template
                 kainjow::mustache::data propertyTypeData;
+                propertyTypeData.set("type_name", property.type);
                 propertyTypeData.set("is_view_model",
                                        property.type == "viewModel");
                 propertyTypeData.set("is_enum", property.type == "enum");
