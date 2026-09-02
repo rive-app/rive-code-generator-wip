@@ -1,0 +1,13 @@
+version: 2
+updates:
+  # Security updates only (open-pull-requests-limit: 0 disables version updates).
+  # Groups batch all security bumps per lockfile into a single PR.
+  - package-ecosystem: "npm"
+    directories: ["**/*"]
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 0
+    groups:
+      npm-security:
+        applies-to: security-updates
+        patterns: ["*"]
