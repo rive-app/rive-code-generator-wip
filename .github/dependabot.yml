@@ -1,14 +1,14 @@
 version: 2
 updates:
   # Security updates only (open-pull-requests-limit: 0 disables version updates).
-  # Groups batch all security bumps per lockfile into a single PR.
+  # One entry per manifest directory so security bumps group into one PR per lockfile.
+  # Add new manifest locations here as they appear.
   - package-ecosystem: "npm"
-    directories:
-      - "/.github/scripts/release"
+    directory: "/.github/scripts/release"
     schedule:
       interval: "weekly"
     open-pull-requests-limit: 0
     groups:
-      npm-security:
+      security:
         applies-to: security-updates
         patterns: ["*"]
